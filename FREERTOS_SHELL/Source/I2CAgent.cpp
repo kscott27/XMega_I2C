@@ -5,6 +5,7 @@ bool I2CAgent::transmit( Command & cmd )
   resetPacket(outPacket_);
   outPacket_.put(writeCommand_);
   cmd.writePacket(outPacket_);
+  driver_->getTransmitter()->run(outPacket_);
   return true;
 }
 

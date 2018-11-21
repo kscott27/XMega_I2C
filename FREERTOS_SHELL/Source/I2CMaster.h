@@ -13,42 +13,50 @@
 
 #include <avr/io.h>                         // Port I/O for SFR's
 #include <avr/interrupt.h>
+#include "frt_queue.h"
 
 
 class I2CMaster
 {
-	protected:
+protected:
 	
 	TWI_t* interface;
 	PORT_t* bus_port;
 	uint8_t baudrate;
 	uint32_t i2c_freq;
-	//uint8_t* data_out;
 	
 	uint8_t addr_list[10];
 
-	class State
-	{
+  
+  
+	
+public:
+
+  class State
+  {
   public:
+    typedef frt_queue< uint8_t > Packet;
+
     inline State() { }
     void setTransition( State * nextState, State * errorState )
     {
       nextState_ = nextState;
       errorState_ = errorState;
     }
-    virtual State * execute( uint8_t & packet ) = 0;
+    virtual State * execute( Packet & packet ) = 0;
 
   protected:
     State * nextState_;
     State * errorState_;
-	};
+  };
 
   class Transmitter
   {
   public:
+    typedef frt_queue< uint8_t > Packet;
+
     Transmitter( TWI_t * interface );
-    void run( uint8_t & packet );
-  protected:
+    void run( Packet & packet );
 
     class StartState
       : public State
@@ -57,7 +65,7 @@ class I2CMaster
       inline StartState( TWI_t * interface )
         : interface_(interface)
       { }
-      State * execute( uint8_t & packet );
+      State * execute( Packet & packet );
     protected:
       TWI_t * interface_;
     };
@@ -70,7 +78,7 @@ class I2CMaster
         : interface_(interface),
           timeout_(timeout)
       { }
-      State * execute( uint8_t & packet );
+      State * execute( Packet & packet );
     protected:
       TWI_t * interface_;
       uint16_t timeout_;
@@ -83,7 +91,7 @@ class I2CMaster
       inline DoneState( TWI_t * interface )
         : interface_(interface)
       { }
-      State * execute( uint8_t & packet );
+      State * execute( Packet & packet );
     protected:
       TWI_t * interface_;
     };
@@ -95,11 +103,12 @@ class I2CMaster
       inline ErrorState( TWI_t * interface )
         : interface_(interface)
       { }
-      State * execute( uint8_t & packet );
+      State * execute( Packet & packet );
     protected:
       TWI_t * interface_;
     };
 
+  protected:
     State * currentState_;
     State * startState_;
     State * statusState_;
@@ -111,10 +120,6 @@ class I2CMaster
 
   };
 
-
-  Transmitter * transmitter_;
-	
-	public:
 	
 	I2CMaster(TWI_t * interface, uint32_t i2c_freq);
 
@@ -157,6 +162,9 @@ class I2CMaster
 	void send_ack_stop(void);
 	
 	void send_stop(void);
+
+  Transmitter * transmitter_;
+
 };
 
 

@@ -13,8 +13,7 @@ Source/MB1202.d Source/MB1202.o: ../Source/MB1202.cpp ../Source/MB1202.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\fuse.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\lock.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\interrupt.h \
- ../Source/Command.h ../Source/lib/frtcpp/frt_queue.h \
- ../Source/lib/freertos/FreeRTOS.h \
+ ../Source/lib/frtcpp/frt_queue.h ../Source/lib/freertos/FreeRTOS.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\lib\gcc\avr\5.4.0\include\stddef.h \
  ../Source/lib/freertos/projdefs.h \
  ../Source/lib/freertos/FreeRTOSConfig.h \
@@ -23,7 +22,7 @@ Source/MB1202.d Source/MB1202.o: ../Source/MB1202.cpp ../Source/MB1202.h \
  ../Source/lib/serial/emstream.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\pgmspace.h \
- ../Source/lib/frtcpp/frt_base_queue.h
+ ../Source/lib/frtcpp/frt_base_queue.h ../Source/Command.h
 
 ../Source/MB1202.h:
 
@@ -55,8 +54,6 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\interrupt.h:
 
-../Source/Command.h:
-
 ../Source/lib/frtcpp/frt_queue.h:
 
 ../Source/lib/freertos/FreeRTOS.h:
@@ -82,3 +79,5 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\pgmspace.h:
 
 ../Source/lib/frtcpp/frt_base_queue.h:
+
+../Source/Command.h:
