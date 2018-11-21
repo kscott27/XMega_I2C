@@ -5,8 +5,8 @@ bool I2CAgent::transmit( Command & cmd )
   resetPacket(outPacket_);
   outPacket_.put(writeCommand_);
   cmd.writePacket(outPacket_);
-  driver_->getTransmitter()->run(outPacket_);
-  return true;
+  bool status = driver_->getTransmitter()->run(outPacket_);
+  return status;
 }
 
 void I2CAgent::setSlaveAddr( uint8_t addr )

@@ -26,16 +26,16 @@ public:
     typedef frt_queue< uint8_t > Packet;
 
     inline State() { }
-    void setTransition( State * nextState, State * errorState )
+    void setTransition( State * nextState, State * returnState )
     {
       nextState_ = nextState;
-      errorState_ = errorState;
+      returnState_ = returnState;
     }
     virtual State * execute( Packet & packet ) = 0;
 
   protected:
     State * nextState_;
-    State * errorState_;
+    State * returnState_;
   };
 
   class Transmitter
@@ -44,7 +44,7 @@ public:
     typedef frt_queue< uint8_t > Packet;
 
     Transmitter( TWI_t * interface );
-    void run( Packet & packet );
+    bool run( Packet & packet );
 
   protected:
     class StartState
@@ -71,6 +71,30 @@ public:
     protected:
       TWI_t * interface_;
       uint16_t timeout_;
+    };
+
+    class ExchangeState
+      : public State
+    {
+    public:
+      inline ExchangeState( TWI_t * interface )
+        : interface_(interface)
+      { }
+      State * execute( Packet & packet );
+    protected:
+      TWI_t * interface_;
+    };
+
+    class PacketStatusState
+      : public State
+    {
+    public:
+      inline PacketStatusState( TWI_t * interface )
+        : interface_(interface)
+      { }
+      State * execute( Packet & packet );
+    protected:
+      TWI_t * interface_;
     };
 
     class DoneState
@@ -100,6 +124,8 @@ public:
     State * currentState_;
     State * startState_;
     State * statusState_;
+    State * exchangeState_;
+    State * packetStatusState_;
     State * errorState_;
     State * doneState_;
     TWI_t * interface_;
@@ -107,49 +133,49 @@ public:
     uint16_t timeout_;
 
   };
-	
-	I2CMaster(TWI_t * interface, uint32_t i2c_freq);
+  
+  I2CMaster(TWI_t * interface, uint32_t i2c_freq);
 
   Transmitter * getTransmitter() { return transmitter_; }
-	
-	void set_baudrate (uint32_t i2c_freq);
-	
-	uint8_t* scan (void);
-	
-	bool is_ready (uint8_t addr);
-	
-	bool write (uint8_t slave_addr, uint8_t* data, uint8_t packet_len, uint16_t timeout=1000);
-	
-	bool mem_write (uint8_t slave_addr, uint8_t mem_addr, uint8_t* data, uint8_t packet_len, uint16_t timeout=100000);
-	
-	bool read (uint8_t slave_addr, uint8_t* data, uint8_t packet_len, uint16_t timeout=1000);
-	
-	bool mem_read (uint8_t slave_addr, uint8_t mem_addr, uint8_t* data, uint8_t packet_len, uint16_t timeout=100000);
-	
-	void I2CInitWrite(void);
-	
-	void I2CInitRead(void);
-	
-	void I2CWriteDataTrans(void);
-	
-	void I2CReadDataTrans(void);
-	
-	void I2CAckStop(void);
-	
-	void send_start(void);
-	
-	void byte_recv(void);
-	
-	void send_ack(void);
-	
-	void send_rep_start(void);
-	
-	void send_nack_stop(void);
-	
-	void send_ack_stop(void);
-	
-	void send_stop(void);
   
+  void set_baudrate (uint32_t i2c_freq);
+  
+  uint8_t* scan (void);
+  
+  bool is_ready (uint8_t addr);
+  
+  bool write (uint8_t slave_addr, uint8_t* data, uint8_t packet_len, uint16_t timeout=1000);
+  
+  bool mem_write (uint8_t slave_addr, uint8_t mem_addr, uint8_t* data, uint8_t packet_len, uint16_t timeout=100000);
+  
+  bool read (uint8_t slave_addr, uint8_t* data, uint8_t packet_len, uint16_t timeout=1000);
+  
+  bool mem_read (uint8_t slave_addr, uint8_t mem_addr, uint8_t* data, uint8_t packet_len, uint16_t timeout=100000);
+  
+  void I2CInitWrite(void);
+  
+  void I2CInitRead(void);
+  
+  void I2CWriteDataTrans(void);
+  
+  void I2CReadDataTrans(void);
+  
+  void I2CAckStop(void);
+  
+  void send_start(void);
+  
+  void byte_recv(void);
+  
+  void send_ack(void);
+  
+  void send_rep_start(void);
+  
+  void send_nack_stop(void);
+  
+  void send_ack_stop(void);
+  
+  void send_stop(void);
+
 protected:
 
   Transmitter * transmitter_;
@@ -165,4 +191,3 @@ protected:
 
 
 #endif /* I2CMaster_H_ */
-
