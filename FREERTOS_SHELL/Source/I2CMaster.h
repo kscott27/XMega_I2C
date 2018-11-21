@@ -31,16 +31,16 @@ class I2CMaster
 	{
   public:
     inline State() { }
-    void setTransition( State * nextState, State * returnState )
+    void setTransition( State * nextState, State * errorState )
     {
       nextState_ = nextState;
-      returnState_ = returnState;
+      errorState_ = errorState;
     }
     virtual State * execute( uint8_t & packet ) = 0;
 
   protected:
     State * nextState_;
-    State * returnState_;
+    State * errorState_;
 	};
 
   class Transmitter
@@ -54,7 +54,45 @@ class I2CMaster
       : public State
     {
     public:
-      StartState( TWI_t * interface )
+      inline StartState( TWI_t * interface )
+        : interface_(interface)
+      { }
+      State * execute( uint8_t & packet );
+    protected:
+      TWI_t * interface_;
+    };
+
+    class StatusState
+      : public State
+    {
+    public:
+      inline StatusState( TWI_t * interface, uint16_t timeout )
+        : interface_(interface),
+          timeout_(timeout)
+      { }
+      State * execute( uint8_t & packet );
+    protected:
+      TWI_t * interface_;
+      uint16_t timeout_;
+    };
+
+    class DoneState
+      : public State
+    {
+    public:
+      inline DoneState( TWI_t * interface )
+        : interface_(interface)
+      { }
+      State * execute( uint8_t & packet );
+    protected:
+      TWI_t * interface_;
+    };
+
+    class ErrorState
+      : public State
+    {
+    public:
+      inline ErrorState( TWI_t * interface )
         : interface_(interface)
       { }
       State * execute( uint8_t & packet );
@@ -64,10 +102,15 @@ class I2CMaster
 
     State * currentState_;
     State * startState_;
+    State * statusState_;
+    State * errorState_;
+    State * doneState_;
     TWI_t * interface_;
     uint8_t slaveAddr_;
+    uint16_t timeout_;
 
   };
+
 
   Transmitter * transmitter_;
 	

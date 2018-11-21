@@ -222,12 +222,6 @@
     <Compile Include="Source\twi_master_driver.h">
       <SubType>compile</SubType>
     </Compile>
-    <None Include="Source\MMA845X.cpp">
-      <SubType>compile</SubType>
-    </None>
-    <Compile Include="Source\MMA845X.h">
-      <SubType>compile</SubType>
-    </Compile>
     <Compile Include="Source\task_sonar.cpp">
       <SubType>compile</SubType>
     </Compile>

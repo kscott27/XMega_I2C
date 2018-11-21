@@ -43,14 +43,17 @@ I2CMaster::I2CMaster(TWI_t* interface, uint32_t i2c_freq)
 }
 
 I2CMaster::Transmitter::Transmitter( TWI_t * interface )
+  : timeout_(10000)
 {
   startState_ = new StartState( interface );
+  statusState_ = new StatusState( interface, timeout_ );
+  doneState_ = new DoneState( interface );
 }
 
 void I2CMaster::Transmitter::run( uint8_t & packet )
 {
   currentState_ = startState_;
-  while( currentState_ != startState_ )
+  while( (currentState_ != doneState_) || (currentState_ != errorState_) )
   {
     currentState_ = currentState_->execute(packet);
   }
@@ -59,6 +62,33 @@ void I2CMaster::Transmitter::run( uint8_t & packet )
 I2CMaster::State * I2CMaster::Transmitter::StartState::execute( uint8_t & packet )
 {
   interface_->MASTER.ADDR = packet << 1;
+  return nextState_;
+}
+
+I2CMaster::State * I2CMaster::Transmitter::StatusState::execute( uint8_t & packet )
+{
+  volatile uint16_t counter;
+  counter = timeout_;
+  // Need to figure out which status bit to be checking
+  while( (--counter != 0) && (interface_->MASTER.STATUS & TWI_MASTER_RXACK_bm) ){ }
+  if( counter == 0 )
+  {
+    return errorState_;
+  }
+  else
+  {
+    return nextState_;
+  }
+}
+
+I2CMaster::State * I2CMaster::Transmitter::DoneState::execute( uint8_t & packet )
+{
+  return nextState_;
+}
+
+I2CMaster::State * I2CMaster::Transmitter::ErrorState::execute( uint8_t & packet )
+{
+  return nextState_;
 }
 
 void I2CMaster::set_baudrate(uint32_t i2c_freq)
