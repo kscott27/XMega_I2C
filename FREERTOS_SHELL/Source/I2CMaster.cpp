@@ -47,9 +47,7 @@ I2CMaster::Transmitter::Transmitter( TWI_t * interface )
     startState_(new StartState( interface )),
     statusState_(new StatusState( interface, timeout_ )),
     doneState_(new DoneState( interface ))
-{
-
-}
+{}
 
 void I2CMaster::Transmitter::run( Packet & packet )
 {

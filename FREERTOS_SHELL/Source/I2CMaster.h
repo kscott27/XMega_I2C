@@ -18,18 +18,6 @@
 
 class I2CMaster
 {
-protected:
-	
-	TWI_t* interface;
-	PORT_t* bus_port;
-	uint8_t baudrate;
-	uint32_t i2c_freq;
-	
-	uint8_t addr_list[10];
-
-  
-  
-	
 public:
 
   class State
@@ -58,6 +46,7 @@ public:
     Transmitter( TWI_t * interface );
     void run( Packet & packet );
 
+  protected:
     class StartState
       : public State
     {
@@ -108,7 +97,6 @@ public:
       TWI_t * interface_;
     };
 
-  protected:
     State * currentState_;
     State * startState_;
     State * statusState_;
@@ -119,7 +107,6 @@ public:
     uint16_t timeout_;
 
   };
-
 	
 	I2CMaster(TWI_t * interface, uint32_t i2c_freq);
 
@@ -162,8 +149,16 @@ public:
 	void send_ack_stop(void);
 	
 	void send_stop(void);
+  
+protected:
 
   Transmitter * transmitter_;
+  TWI_t* interface;
+  PORT_t* bus_port;
+  uint8_t baudrate;
+  uint32_t i2c_freq;
+  
+  uint8_t addr_list[10];
 
 };
 
