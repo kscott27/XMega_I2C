@@ -16,6 +16,7 @@
 
 #include "I2CMaster.h"
 #include "Command.h"
+#include "I2CAgent.h"
 #include "frt_queue.h"
 
 class MB1202
@@ -35,20 +36,21 @@ public:
 		uint8_t commandCode_;
 	};
 	
-	MB1202 (I2CMaster* i2c);
+	MB1202( I2CMaster * driver );
 	
-	bool is_ready(void);
+	// bool is_ready(void);
 	
 	bool take_reading(void);
 	
-	uint16_t get_reading(void);
+	// uint16_t get_reading(void);
 	
-	void change_slave_addr(uint8_t new_addr);
+	// void change_slave_addr(uint8_t new_addr);
 
 protected:
 
-	I2CMaster* i2c;
-	uint8_t slave_addr;
+	I2CMaster * driver_;
+	I2CAgent * i2cAgent_;
+	uint8_t slaveAddr_;
 	uint8_t range_cmd[1];
 	uint8_t addr_change_seq[3] = {0};
 	uint8_t bytes_received[2] = {0};

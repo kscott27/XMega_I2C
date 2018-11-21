@@ -26,16 +26,16 @@ public:
     typedef frt_queue< uint8_t > Packet;
 
     inline State() { }
-    void setTransition( State * nextState, State * errorState )
+    void setTransition( State * nextState, State * returnState )
     {
       nextState_ = nextState;
-      errorState_ = errorState;
+      returnState_ = returnState;
     }
     virtual State * execute( Packet & packet ) = 0;
 
   protected:
     State * nextState_;
-    State * errorState_;
+    State * returnState_;
   };
 
   class Transmitter
@@ -44,7 +44,7 @@ public:
     typedef frt_queue< uint8_t > Packet;
 
     Transmitter( TWI_t * interface );
-    void run( Packet & packet );
+    bool run( Packet & packet );
 
   protected:
     class StartState
@@ -71,6 +71,30 @@ public:
     protected:
       TWI_t * interface_;
       uint16_t timeout_;
+    };
+
+    class ExchangeState
+      : public State
+    {
+    public:
+      inline ExchangeState( TWI_t * interface )
+        : interface_(interface)
+      { }
+      State * execute( Packet & packet );
+    protected:
+      TWI_t * interface_;
+    };
+
+    class PacketStatusState
+      : public State
+    {
+    public:
+      inline PacketStatusState( TWI_t * interface )
+        : interface_(interface)
+      { }
+      State * execute( Packet & packet );
+    protected:
+      TWI_t * interface_;
     };
 
     class DoneState
@@ -100,6 +124,8 @@ public:
     State * currentState_;
     State * startState_;
     State * statusState_;
+    State * exchangeState_;
+    State * packetStatusState_;
     State * errorState_;
     State * doneState_;
     TWI_t * interface_;
@@ -149,7 +175,7 @@ public:
 	void send_ack_stop(void);
 	
 	void send_stop(void);
-  
+
 protected:
 
   Transmitter * transmitter_;

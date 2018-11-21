@@ -46,15 +46,33 @@ I2CMaster::Transmitter::Transmitter( TWI_t * interface )
   : timeout_(10000),
     startState_(new StartState( interface )),
     statusState_(new StatusState( interface, timeout_ )),
-    doneState_(new DoneState( interface ))
-{}
+    exchangeState_(new ExchangeState( interface )),
+    packetStatusState_(new PacketStatusState( interface )),
+    doneState_(new DoneState( interface )),
+    errorState_(new ErrorState( interface ))
+{
+  startState_->setTransition(statusState_, statusState_);
+  statusState_->setTransition(exchangeState_, errorState_);
+  exchangeState_->setTransition(packetStatusState_, packetStatusState_);
+  packetStatusState_->setTransition(doneState_, statusState_);
+}
 
-void I2CMaster::Transmitter::run( Packet & packet )
+bool I2CMaster::Transmitter::run( Packet & packet )
 {
   currentState_ = startState_;
+  
   while( (currentState_ != doneState_) || (currentState_ != errorState_) )
   {
     currentState_ = currentState_->execute(packet);
+  }
+
+  if( currentState_ == doneState_ )
+  {
+    return true;
+  }
+  else
+  {
+    return false;
   }
 }
 
@@ -72,11 +90,32 @@ I2CMaster::State * I2CMaster::Transmitter::StatusState::execute( Packet & packet
   while( (--counter != 0) && (interface_->MASTER.STATUS & TWI_MASTER_RXACK_bm) ){ }
   if( counter == 0 )
   {
-    return errorState_;
+    return returnState_;
   }
   else
   {
     return nextState_;
+  }
+}
+
+I2CMaster::State * I2CMaster::Transmitter::ExchangeState::execute( Packet & packet )
+{
+  if( packet.not_empty() )
+  {
+    interface_->MASTER.DATA = packet.get();
+  }
+  return nextState_;
+}
+
+I2CMaster::State * I2CMaster::Transmitter::PacketStatusState::execute( Packet & packet )
+{
+  if( packet.is_empty() )
+  {
+    return nextState_;
+  }
+  else
+  {
+    return returnState_;
   }
 }
 

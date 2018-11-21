@@ -30,8 +30,8 @@ Source/main.d Source/main.o: ../Source/main.cpp \
  ../Source/lib/frtcpp/frt_queue.h ../Source/lib/frtcpp/frt_base_queue.h \
  ../Source/lib/frtcpp/frt_shared_data.h ../Source/shares.h \
  ../Source/I2CMaster.h ../Source/MB1202.h ../Source/Command.h \
- ../Source/task_user.h ../Source/lib/serial/ansi_terminal.h \
- ../Source/task_sonar.h
+ ../Source/I2CAgent.h ../Source/CommAgent.h ../Source/task_user.h \
+ ../Source/lib/serial/ansi_terminal.h ../Source/task_sonar.h
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h:
 
@@ -120,6 +120,10 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 ../Source/MB1202.h:
 
 ../Source/Command.h:
+
+../Source/I2CAgent.h:
+
+../Source/CommAgent.h:
 
 ../Source/task_user.h:
 

@@ -77,8 +77,8 @@ void task_sonar::run (void)
 				
 			case (1):
 			
-				range_reading = mb1202->get_reading();
-				*p_serial << PMS ("Sonar: ") << range_reading << endl;
+				// range_reading = mb1202->get_reading();
+				// *p_serial << PMS ("Sonar: ") << range_reading << endl;
 				
 				transition_to(0);
 				
