@@ -26,10 +26,56 @@ class I2CMaster
 	//uint8_t* data_out;
 	
 	uint8_t addr_list[10];
+
+	class State
+	{
+  public:
+    inline State() { }
+    void setTransition( State * nextState, State * returnState )
+    {
+      nextState_ = nextState;
+      returnState_ = returnState;
+    }
+    virtual State * execute( uint8_t & packet ) = 0;
+
+  protected:
+    State * nextState_;
+    State * returnState_;
+	};
+
+  class Transmitter
+  {
+  public:
+    Transmitter( TWI_t * interface );
+    void run( uint8_t & packet );
+  protected:
+
+    class StartState
+      : public State
+    {
+    public:
+      StartState( TWI_t * interface )
+        : interface_(interface)
+      { }
+      State * execute( uint8_t & packet );
+    protected:
+      TWI_t * interface_;
+    };
+
+    State * currentState_;
+    State * startState_;
+    TWI_t * interface_;
+    uint8_t slaveAddr_;
+
+  };
+
+  Transmitter * transmitter_;
 	
 	public:
 	
-	I2CMaster(TWI_t* interface, uint32_t i2c_freq);
+	I2CMaster(TWI_t * interface, uint32_t i2c_freq);
+
+  Transmitter * getTransmitter() { return transmitter_; }
 	
 	void set_baudrate (uint32_t i2c_freq);
 	

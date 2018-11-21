@@ -8,7 +8,9 @@
 #include "I2CMaster.h"
 
 I2CMaster::I2CMaster(TWI_t* interface, uint32_t i2c_freq)
-:interface(interface), i2c_freq(i2c_freq)
+  : interface(interface), 
+    i2c_freq(i2c_freq),
+    transmitter_( new Transmitter(interface) )
 {	
 	if (interface == &TWIC)
 	{
@@ -38,6 +40,25 @@ I2CMaster::I2CMaster(TWI_t* interface, uint32_t i2c_freq)
 	interface->MASTER.STATUS |= TWI_MASTER_RIF_bm | TWI_MASTER_WIF_bm | TWI_MASTER_ARBLOST_bm | TWI_MASTER_BUSERR_bm | TWI_MASTER_BUSSTATE_IDLE_gc; //clear all flags initially and select bus state IDLE
 
 	interface->MASTER.CTRLA = TWI_MASTER_ENABLE_bm;
+}
+
+I2CMaster::Transmitter::Transmitter( TWI_t * interface )
+{
+  startState_ = new StartState( interface );
+}
+
+void I2CMaster::Transmitter::run( uint8_t & packet )
+{
+  currentState_ = startState_;
+  while( currentState_ != startState_ )
+  {
+    currentState_ = currentState_->execute(packet);
+  }
+}
+
+I2CMaster::State * I2CMaster::Transmitter::StartState::execute( uint8_t & packet )
+{
+  interface_->MASTER.ADDR = packet << 1;
 }
 
 void I2CMaster::set_baudrate(uint32_t i2c_freq)
