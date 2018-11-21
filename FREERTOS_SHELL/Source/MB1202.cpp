@@ -13,13 +13,19 @@
  *  @param SPIM A pointer to an SPI_master object
  */
 MB1202::MB1202(I2CMaster* i2c)
-:i2c(i2c)
+  : i2c(i2c),
+  	rangeCommand_(new RangeCommand())
 {
 	slave_addr = SLAVE_ADDR;
 	range_cmd[0] = RANGE_CMD;
 	addr_change_seq[0] = ADDR_CHANGE_0;
 	addr_change_seq[1] = ADDR_CHANGE_1;
 };
+
+void MB1202::RangeCommand::writePacket( Packet & packet )
+{
+	packet.put(commandCode_);
+}
 
 bool MB1202::is_ready (void)
 {

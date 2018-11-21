@@ -2,11 +2,15 @@
 # Automatically-generated file. Do not edit or delete the file
 ################################################################################
 
+Source\I2CAgent.cpp
+
 Source\I2CMaster.cpp
 
 Source\lib\freertos\croutine.c
 
 Source\MB1202.cpp
+
+Source\Packet.cpp
 
 Source\task_sonar.cpp
 

@@ -15,19 +15,25 @@
 #define ADDR_CHANGE_1 165
 
 #include "I2CMaster.h"
+#include "Command.h"
+#include "frt_queue.h"
 
 class MB1202
 {
-	protected:
-	
-	I2CMaster* i2c;
-	uint8_t slave_addr;
-	uint8_t range_cmd[1];
-	uint8_t addr_change_seq[3] = {0};
-	uint8_t bytes_received[2] = {0};
-	uint16_t range_reading;
+public:
 
+	class RangeCommand
+		: public Command
+	{
 	public:
+		typedef frt_queue< uint8_t > Packet;
+		inline RangeCommand()
+			: commandCode_(RANGE_CMD)
+		{ }
+		void writePacket( Packet & packet );
+	protected:
+		uint8_t commandCode_;
+	};
 	
 	MB1202 (I2CMaster* i2c);
 	
@@ -38,6 +44,16 @@ class MB1202
 	uint16_t get_reading(void);
 	
 	void change_slave_addr(uint8_t new_addr);
+
+protected:
+
+	I2CMaster* i2c;
+	uint8_t slave_addr;
+	uint8_t range_cmd[1];
+	uint8_t addr_change_seq[3] = {0};
+	uint8_t bytes_received[2] = {0};
+	uint16_t range_reading;
+	RangeCommand * rangeCommand_;
 	
 };
 

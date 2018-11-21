@@ -192,6 +192,18 @@
     <Compile Include="Source\avr_compiler.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Source\CommAgent.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Source\Command.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Source\I2CAgent.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Source\I2CAgent.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Source\I2CMaster.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -219,6 +231,12 @@
     <None Include="Source\twi_master_driver.c">
       <SubType>compile</SubType>
     </None>
+    <Compile Include="Source\Packet.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Source\Packet.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Source\twi_master_driver.h">
       <SubType>compile</SubType>
     </Compile>

@@ -43,9 +43,11 @@ SUBDIRS :=  \
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
+../Source/I2CAgent.cpp \
 ../Source/I2CMaster.cpp \
 ../Source/lib/freertos/croutine.c \
 ../Source/MB1202.cpp \
+../Source/Packet.cpp \
 ../Source/task_sonar.cpp \
 ../Source/task_user.cpp \
 ../Source/lib/freertos/heap_2.c \
@@ -102,9 +104,11 @@ ASM_SRCS +=
 
 
 OBJS +=  \
+Source/I2CAgent.o \
 Source/I2CMaster.o \
 Source/lib/freertos/croutine.o \
 Source/MB1202.o \
+Source/Packet.o \
 Source/task_sonar.o \
 Source/task_user.o \
 Source/lib/freertos/heap_2.o \
@@ -154,9 +158,11 @@ Source/lib/serial/rs232int.o \
 Source/main.o
 
 OBJS_AS_ARGS +=  \
+Source/I2CAgent.o \
 Source/I2CMaster.o \
 Source/lib/freertos/croutine.o \
 Source/MB1202.o \
+Source/Packet.o \
 Source/task_sonar.o \
 Source/task_user.o \
 Source/lib/freertos/heap_2.o \
@@ -206,9 +212,11 @@ Source/lib/serial/rs232int.o \
 Source/main.o
 
 C_DEPS +=  \
+Source/I2CAgent.d \
 Source/I2CMaster.d \
 Source/lib/freertos/croutine.d \
 Source/MB1202.d \
+Source/Packet.d \
 Source/task_sonar.d \
 Source/task_user.d \
 Source/lib/freertos/heap_2.d \
@@ -258,9 +266,11 @@ Source/lib/serial/rs232int.d \
 Source/main.d
 
 C_DEPS_AS_ARGS +=  \
+Source/I2CAgent.d \
 Source/I2CMaster.d \
 Source/lib/freertos/croutine.d \
 Source/MB1202.d \
+Source/Packet.d \
 Source/task_sonar.d \
 Source/task_user.d \
 Source/lib/freertos/heap_2.d \
@@ -323,6 +333,10 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
+
+
 
 
 
