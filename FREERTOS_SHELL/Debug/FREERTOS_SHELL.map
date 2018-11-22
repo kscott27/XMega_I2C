@@ -273,13 +273,13 @@ Discarded input sections
  .text._ZN9frt_queueIhE3putERKh
                 0x00000000       0x24 Source/MB1202.o
  .text._ZN6MB1202C2EP9I2CMaster
-                0x00000000      0x12e Source/MB1202.o
+                0x00000000      0x134 Source/MB1202.o
  .text._ZN6MB12028is_readyEv
                 0x00000000        0xe Source/MB1202.o
  .text._ZN6MB120212take_readingEv
-                0x00000000       0x22 Source/MB1202.o
+                0x00000000       0x1c Source/MB1202.o
  .text._ZN6MB120211get_readingEv
-                0x00000000       0x3a Source/MB1202.o
+                0x00000000       0x5e Source/MB1202.o
  .text._ZN6MB120217change_slave_addrEh
                 0x00000000       0x26 Source/MB1202.o
  .rodata._ZTV9frt_queueIhE
@@ -290,14 +290,14 @@ Discarded input sections
                 0x00000000        0xe Source/MB1202.o
  .rodata._ZTVN6MB120212RangeCommandE
                 0x00000000        0x6 Source/MB1202.o
- .debug_info    0x00000000     0x2291 Source/MB1202.o
- .debug_abbrev  0x00000000      0x513 Source/MB1202.o
- .debug_loc     0x00000000      0xcfa Source/MB1202.o
+ .debug_info    0x00000000     0x22a2 Source/MB1202.o
+ .debug_abbrev  0x00000000      0x572 Source/MB1202.o
+ .debug_loc     0x00000000      0xcc5 Source/MB1202.o
  .debug_aranges
                 0x00000000       0xd8 Source/MB1202.o
  .debug_ranges  0x00000000       0xc8 Source/MB1202.o
  .debug_line    0x00000000      0x5a3 Source/MB1202.o
- .debug_str     0x00000000     0x1533 Source/MB1202.o
+ .debug_str     0x00000000     0x1555 Source/MB1202.o
  .comment       0x00000000       0x31 Source/MB1202.o
  .debug_frame   0x00000000      0x298 Source/MB1202.o
  .text          0x00000000        0x0 Source/Packet.o
@@ -318,14 +318,14 @@ Discarded input sections
                 0x00000000        0x8 Source/task_sonar.o
  .progmem.something
                 0x00000000        0x8 Source/task_sonar.o
- .debug_info    0x00000000     0x1afe Source/task_sonar.o
- .debug_abbrev  0x00000000      0x4a7 Source/task_sonar.o
+ .debug_info    0x00000000     0x1b21 Source/task_sonar.o
+ .debug_abbrev  0x00000000      0x4bc Source/task_sonar.o
  .debug_loc     0x00000000      0x1be Source/task_sonar.o
  .debug_aranges
                 0x00000000       0x28 Source/task_sonar.o
  .debug_ranges  0x00000000       0x18 Source/task_sonar.o
  .debug_line    0x00000000      0x2d4 Source/task_sonar.o
- .debug_str     0x00000000     0x169f Source/task_sonar.o
+ .debug_str     0x00000000     0x16bc Source/task_sonar.o
  .comment       0x00000000       0x31 Source/task_sonar.o
  .debug_frame   0x00000000       0x5c Source/task_sonar.o
  .group         0x00000000        0x8 Source/task_user.o

@@ -56,6 +56,8 @@ protected:
 	uint8_t bytes_received[2] = {0};
 	uint16_t range_reading;
 	RangeCommand * rangeCommand_;
+	static const uint8_t outPacketSize_ = 2;
+	static const uint8_t inPacketSize_ = 2;
 	
 };
 
