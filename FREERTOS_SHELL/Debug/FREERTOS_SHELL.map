@@ -83,22 +83,28 @@ Discarded input sections
  .text          0x00000000        0x0 Source/I2CAgent.o
  .data          0x00000000        0x0 Source/I2CAgent.o
  .bss           0x00000000        0x0 Source/I2CAgent.o
+ .text._ZN8I2CAgent10readPacketEv
+                0x00000000       0x16 Source/I2CAgent.o
+ .text._ZN8I2CAgent11resetPacketER9frt_queueIhE
+                0x00000000       0x2e Source/I2CAgent.o
  .text._ZN8I2CAgent8transmitER7Command
-                0x00000000       0x72 Source/I2CAgent.o
+                0x00000000       0x2a Source/I2CAgent.o
+ .text._ZN8I2CAgent11writePacketER7Command
+                0x00000000       0x64 Source/I2CAgent.o
  .text._ZN8I2CAgent12setSlaveAddrEh
                 0x00000000       0x12 Source/I2CAgent.o
  .rodata._ZTV8I2CAgent
-                0x00000000        0xe Source/I2CAgent.o
- .debug_info    0x00000000     0x1506 Source/I2CAgent.o
- .debug_abbrev  0x00000000      0x424 Source/I2CAgent.o
- .debug_loc     0x00000000      0x17a Source/I2CAgent.o
+                0x00000000        0xc Source/I2CAgent.o
+ .debug_info    0x00000000     0x15c5 Source/I2CAgent.o
+ .debug_abbrev  0x00000000      0x41e Source/I2CAgent.o
+ .debug_loc     0x00000000      0x2b6 Source/I2CAgent.o
  .debug_aranges
-                0x00000000       0x28 Source/I2CAgent.o
- .debug_ranges  0x00000000       0x30 Source/I2CAgent.o
- .debug_line    0x00000000      0x27b Source/I2CAgent.o
- .debug_str     0x00000000     0x11b2 Source/I2CAgent.o
+                0x00000000       0x40 Source/I2CAgent.o
+ .debug_ranges  0x00000000       0x48 Source/I2CAgent.o
+ .debug_line    0x00000000      0x2db Source/I2CAgent.o
+ .debug_str     0x00000000     0x1192 Source/I2CAgent.o
  .comment       0x00000000       0x31 Source/I2CAgent.o
- .debug_frame   0x00000000       0x58 Source/I2CAgent.o
+ .debug_frame   0x00000000       0xa0 Source/I2CAgent.o
  .group         0x00000000        0x8 Source/I2CMaster.o
  .group         0x00000000        0x8 Source/I2CMaster.o
  .group         0x00000000        0x8 Source/I2CMaster.o
@@ -252,17 +258,17 @@ Discarded input sections
  .rodata._ZTV9frt_queueIhE
                 0x00000000       0x24 Source/MB1202.o
  .rodata._ZTV9CommAgent
-                0x00000000        0xe Source/MB1202.o
+                0x00000000        0xc Source/MB1202.o
  .rodata._ZTVN6MB120212RangeCommandE
                 0x00000000        0x6 Source/MB1202.o
- .debug_info    0x00000000     0x1fb5 Source/MB1202.o
- .debug_abbrev  0x00000000      0x503 Source/MB1202.o
+ .debug_info    0x00000000     0x1f91 Source/MB1202.o
+ .debug_abbrev  0x00000000      0x4f4 Source/MB1202.o
  .debug_loc     0x00000000      0xbcc Source/MB1202.o
  .debug_aranges
                 0x00000000       0xd8 Source/MB1202.o
  .debug_ranges  0x00000000       0xc8 Source/MB1202.o
  .debug_line    0x00000000      0x585 Source/MB1202.o
- .debug_str     0x00000000     0x13f8 Source/MB1202.o
+ .debug_str     0x00000000     0x13e0 Source/MB1202.o
  .comment       0x00000000       0x31 Source/MB1202.o
  .debug_frame   0x00000000      0x28c Source/MB1202.o
  .text          0x00000000        0x0 Source/Packet.o

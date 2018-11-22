@@ -10,17 +10,17 @@
 class CommAgent
 {
 public:
+  typedef frt_queue< uint8_t > Packet;
+
   CommAgent( uint8_t packetSize = 10 )
     : inPacket_(packetSize,NULL,10),
       outPacket_(packetSize,NULL,10)
   { }
   virtual bool transmit( Command & cmd ) = 0;
-  virtual bool receive() = 0;
+  // virtual Packet receive() = 0;
 
 protected:
-  typedef frt_queue< uint8_t > Packet;
-
-  virtual void writePacket() = 0;
+  virtual void writePacket( Command & cmd ) = 0;
   virtual void readPacket() = 0;
   virtual void resetPacket( Packet & packet ) = 0;
 

@@ -19,13 +19,13 @@ public:
     : CommAgent(packetSize)
   {}
   virtual bool transmit( Command & cmd );
-  virtual bool receive();
+  // virtual Packet receive();
   void setI2CDriver( I2CMaster * d ) { driver_ = d; }
   void setSlaveAddr( uint8_t addr );
 
 protected:
 
-  virtual void writePacket();
+  virtual void writePacket( Command & cmd );
   virtual void readPacket();
   virtual void resetPacket( Packet & packet );
 
