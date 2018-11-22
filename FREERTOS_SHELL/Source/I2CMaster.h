@@ -45,7 +45,7 @@ public:
   {
   public:
     Receiver( TWI_t * interface );
-    bool run( Packet & packet );
+    Packet & run( Packet & packet );
 
   protected:
     class StartState
@@ -232,6 +232,7 @@ public:
   I2CMaster(TWI_t * interface, uint32_t i2c_freq);
 
   Transmitter * getTransmitter() { return transmitter_; }
+  Receiver *    getReceiver()    { return receiver_; }
   
   void set_baudrate (uint32_t i2c_freq);
   
@@ -274,6 +275,7 @@ public:
 protected:
 
   Transmitter * transmitter_;
+  Receiver * receiver_;
   TWI_t* interface;
   PORT_t* bus_port;
   uint8_t baudrate;

@@ -14,7 +14,7 @@
  */
 MB1202::MB1202(I2CMaster * d)
   : driver_(d),
-  	i2cAgent_(new I2CAgent()),
+  	i2cAgent_(new I2CAgent(2,1)),
   	slaveAddr_(SLAVE_ADDR),
   	rangeCommand_(new RangeCommand())
 {

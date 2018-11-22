@@ -7,13 +7,12 @@ bool I2CAgent::transmit( Command & cmd )
   return status;
 }
 
-// I2CAgent::Packet I2CAgent::receive()
-// {
-//   resetPacket(inPacket_);
-//   inPacket_.put(readCommand_);
-//   // return driver_->getReceiver()->run(inPacket_);
-//   return Packet packet(10, NULL, 10);
-// }
+Packet & I2CAgent::receive()
+{
+  resetPacket(inPacket_);
+  inPacket_.put(readCommand_);
+  return driver_->getReceiver()->run(inPacket_);
+}
 
 void I2CAgent::setSlaveAddr( uint8_t addr )
 {

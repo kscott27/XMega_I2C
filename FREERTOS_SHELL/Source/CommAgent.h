@@ -11,12 +11,12 @@
 class CommAgent
 {
 public:
-  CommAgent( uint8_t packetSize = 10 )
-    : inPacket_(packetSize,NULL,10),
-      outPacket_(packetSize,NULL,10)
+  CommAgent( uint8_t outPacketSize, uint8_t inPacketSize)
+    : inPacket_(inPacketSize,NULL,10),
+      outPacket_(outPacketSize,NULL,10)
   { }
   virtual bool transmit( Command & cmd ) = 0;
-  // virtual Packet receive() = 0;
+  virtual Packet & receive() = 0;
 
 protected:
   virtual void writePacket( Command & cmd ) = 0;

@@ -7,16 +7,17 @@
 #include "CommAgent.h"
 #include "I2CMaster.h"
 #include "frt_queue.h"
+#include "Packet.h"
 
 class I2CAgent
   : public CommAgent
 {
 public:
-  inline I2CAgent( uint8_t packetSize = 10 ) 
-    : CommAgent(packetSize)
+  inline I2CAgent( uint8_t outPacketSize = 2, uint8_t inPacketSize = 1 ) 
+    : CommAgent(outPacketSize, inPacketSize)
   {}
   virtual bool transmit( Command & cmd );
-  // virtual Packet receive();
+  virtual Packet & receive();
   void setI2CDriver( I2CMaster * d ) { driver_ = d; }
   void setSlaveAddr( uint8_t addr );
 

@@ -91,7 +91,7 @@ bool I2CMaster::Transmitter::run( Packet & packet )
   }
 }
 
-bool I2CMaster::Receiver::run( Packet & packet )
+Packet & I2CMaster::Receiver::run( Packet & packet )
 {
   currentState_ = startState_;
   
@@ -100,14 +100,7 @@ bool I2CMaster::Receiver::run( Packet & packet )
     currentState_ = currentState_->execute(packet);
   }
 
-  if( currentState_ == doneState_ )
-  {
-    return true;
-  }
-  else
-  {
-    return false;
-  }
+  return packet;
 }
 
 I2CMaster::State * I2CMaster::Transmitter::StartState::execute( Packet & packet )
