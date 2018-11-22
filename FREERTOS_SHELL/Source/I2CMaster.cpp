@@ -57,7 +57,41 @@ I2CMaster::Transmitter::Transmitter( TWI_t * interface )
   packetStatusState_->setTransition(doneState_, statusState_);
 }
 
+I2CMaster::Receiver::Receiver( TWI_t * interface )
+  : timeout_(10000),
+    startState_(new StartState( interface )),
+    statusState_(new StatusState( interface, timeout_ )),
+    exchangeState_(new ExchangeState( interface )),
+    packetStatusState_(new PacketStatusState( interface )),
+    doneState_(new DoneState( interface )),
+    errorState_(new ErrorState( interface ))
+{
+  startState_->setTransition(statusState_, statusState_);
+  statusState_->setTransition(exchangeState_, errorState_);
+  exchangeState_->setTransition(packetStatusState_, packetStatusState_);
+  packetStatusState_->setTransition(doneState_, statusState_);
+}
+
 bool I2CMaster::Transmitter::run( Packet & packet )
+{
+  currentState_ = startState_;
+  
+  while( (currentState_ != doneState_) || (currentState_ != errorState_) )
+  {
+    currentState_ = currentState_->execute(packet);
+  }
+
+  if( currentState_ == doneState_ )
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
+bool I2CMaster::Receiver::run( Packet & packet )
 {
   currentState_ = startState_;
   
@@ -82,12 +116,18 @@ I2CMaster::State * I2CMaster::Transmitter::StartState::execute( Packet & packet 
   return nextState_;
 }
 
+I2CMaster::State * I2CMaster::Receiver::StartState::execute( Packet & packet )
+{
+  interface_->MASTER.ADDR = packet.get();
+  return nextState_;
+}
+
 I2CMaster::State * I2CMaster::Transmitter::StatusState::execute( Packet & packet )
 {
   volatile uint16_t counter;
   counter = timeout_;
   // Need to figure out which status bit to be checking
-  while( (--counter != 0) && (interface_->MASTER.STATUS & TWI_MASTER_RXACK_bm) ){ }
+  while( (--counter != 0) && (interface_->MASTER.STATUS & (TWI_MASTER_RXACK_bm | TWI_MASTER_WIF_bm)) ){ }
   if( counter == 0 )
   {
     return returnState_;
@@ -96,6 +136,18 @@ I2CMaster::State * I2CMaster::Transmitter::StatusState::execute( Packet & packet
   {
     return nextState_;
   }
+}
+
+I2CMaster::State * I2CMaster::Receiver::StatusState::execute( Packet & packet )
+{
+  volatile uint16_t counter;
+  counter = timeout_;
+  // Need to figure out which status bit to be checking
+  while( (--counter != 0) && (interface_->MASTER.STATUS & (TWI_MASTER_RXACK_bm | TWI_MASTER_RIF_bm)) ){ }
+  if( counter == 0 ) {
+    return returnState_; }
+  else {
+    return nextState_; }
 }
 
 I2CMaster::State * I2CMaster::Transmitter::ExchangeState::execute( Packet & packet )
@@ -107,7 +159,25 @@ I2CMaster::State * I2CMaster::Transmitter::ExchangeState::execute( Packet & pack
   return nextState_;
 }
 
+I2CMaster::State * I2CMaster::Receiver::ExchangeState::execute( Packet & packet )
+{
+  uint8_t data = interface_->MASTER.DATA;
+  packet.put(data);
+}
+
 I2CMaster::State * I2CMaster::Transmitter::PacketStatusState::execute( Packet & packet )
+{
+  if( packet.is_empty() )
+  {
+    return nextState_;
+  }
+  else
+  {
+    return returnState_;
+  }
+}
+
+I2CMaster::State * I2CMaster::Receiver::PacketStatusState::execute( Packet & packet )
 {
   if( packet.is_empty() )
   {

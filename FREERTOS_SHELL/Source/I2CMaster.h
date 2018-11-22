@@ -14,6 +14,7 @@
 #include <avr/io.h>                         // Port I/O for SFR's
 #include <avr/interrupt.h>
 #include "frt_queue.h"
+#include "Packet.h"
 
 
 class I2CMaster
@@ -23,8 +24,6 @@ public:
   class State
   {
   public:
-    typedef frt_queue< uint8_t > Packet;
-
     inline State() { }
     void setTransition( State * nextState, State * returnState )
     {
@@ -38,11 +37,103 @@ public:
     State * returnState_;
   };
 
+  class Receiver
+  {
+  public:
+    Receiver( TWI_t * interface );
+    bool run( Packet & packet );
+
+  protected:
+    class StartState
+      : public State
+    {
+    public:
+      inline StartState( TWI_t * interface )
+        : interface_(interface)
+      { }
+      State * execute( Packet & packet );
+    protected:
+      TWI_t * interface_;
+    };
+
+    class StatusState
+      : public State
+    {
+    public:
+      inline StatusState( TWI_t * interface, uint16_t timeout )
+        : interface_(interface),
+          timeout_(timeout)
+      { }
+      State * execute( Packet & packet );
+    protected:
+      TWI_t * interface_;
+      uint16_t timeout_;
+    };
+
+    class ExchangeState
+      : public State
+    {
+    public:
+      inline ExchangeState( TWI_t * interface )
+        : interface_(interface)
+      { }
+      State * execute( Packet & packet );
+    protected:
+      TWI_t * interface_;
+    };
+
+    class PacketStatusState
+      : public State
+    {
+    public:
+      inline PacketStatusState( TWI_t * interface )
+        : interface_(interface)
+      { }
+      State * execute( Packet & packet );
+    protected:
+      TWI_t * interface_;
+    };
+
+    class DoneState
+      : public State
+    {
+    public:
+      inline DoneState( TWI_t * interface )
+        : interface_(interface)
+      { }
+      State * execute( Packet & packet );
+    protected:
+      TWI_t * interface_;
+    };
+
+    class ErrorState
+      : public State
+    {
+    public:
+      inline ErrorState( TWI_t * interface )
+        : interface_(interface)
+      { }
+      State * execute( Packet & packet );
+    protected:
+      TWI_t * interface_;
+    };
+
+    State * currentState_;
+    State * startState_;
+    State * statusState_;
+    State * exchangeState_;
+    State * packetStatusState_;
+    State * errorState_;
+    State * doneState_;
+    TWI_t * interface_;
+    uint8_t slaveAddr_;
+    uint16_t timeout_;
+    uint8_t packetSize_;
+  };
+
   class Transmitter
   {
   public:
-    typedef frt_queue< uint8_t > Packet;
-
     Transmitter( TWI_t * interface );
     bool run( Packet & packet );
 

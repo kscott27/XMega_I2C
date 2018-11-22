@@ -12,9 +12,6 @@ class I2CAgent
   : public CommAgent
 {
 public:
-
-  typedef frt_queue< uint8_t > Packet;
-
   inline I2CAgent( uint8_t packetSize = 10 ) 
     : CommAgent(packetSize)
   {}

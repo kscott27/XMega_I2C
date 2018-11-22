@@ -24,7 +24,7 @@ Source/I2CAgent.d Source/I2CAgent.o: ../Source/I2CAgent.cpp \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\pgmspace.h \
  ../Source/lib/frtcpp/frt_base_queue.h ../Source/Command.h \
- ../Source/I2CMaster.h
+ ../Source/Packet.h ../Source/I2CMaster.h
 
 ../Source/I2CAgent.h:
 
@@ -83,5 +83,7 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 ../Source/lib/frtcpp/frt_base_queue.h:
 
 ../Source/Command.h:
+
+../Source/Packet.h:
 
 ../Source/I2CMaster.h:

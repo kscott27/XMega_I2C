@@ -22,7 +22,7 @@ Source/I2CMaster.d Source/I2CMaster.o: ../Source/I2CMaster.cpp \
  ../Source/lib/serial/emstream.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\string.h \
  c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\pgmspace.h \
- ../Source/lib/frtcpp/frt_base_queue.h
+ ../Source/lib/frtcpp/frt_base_queue.h ../Source/Packet.h
 
 ../Source/I2CMaster.h:
 
@@ -77,3 +77,5 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\pgmspace.h:
 
 ../Source/lib/frtcpp/frt_base_queue.h:
+
+../Source/Packet.h:

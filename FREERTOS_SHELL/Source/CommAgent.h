@@ -6,12 +6,11 @@
 
 #include "frt_queue.h"
 #include "Command.h"
+#include "Packet.h"
 
 class CommAgent
 {
 public:
-  typedef frt_queue< uint8_t > Packet;
-
   CommAgent( uint8_t packetSize = 10 )
     : inPacket_(packetSize,NULL,10),
       outPacket_(packetSize,NULL,10)
