@@ -24,17 +24,21 @@ public:
   class State
   {
   public:
-    inline State() { }
+    inline State() 
+      : runs_(0)
+    { }
     void setTransition( State * nextState, State * returnState )
     {
       nextState_ = nextState;
       returnState_ = returnState;
     }
     virtual State * execute( Packet & packet ) = 0;
+    void resetRunCount() { runs_ = 0; }
 
   protected:
     State * nextState_;
     State * returnState_;
+    uint8_t runs_;
   };
 
   class Receiver

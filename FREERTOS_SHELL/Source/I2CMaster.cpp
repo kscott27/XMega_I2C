@@ -163,6 +163,7 @@ I2CMaster::State * I2CMaster::Receiver::ExchangeState::execute( Packet & packet 
 {
   uint8_t data = interface_->MASTER.DATA;
   packet.put(data);
+  return nextState_;
 }
 
 I2CMaster::State * I2CMaster::Transmitter::PacketStatusState::execute( Packet & packet )
@@ -179,14 +180,12 @@ I2CMaster::State * I2CMaster::Transmitter::PacketStatusState::execute( Packet & 
 
 I2CMaster::State * I2CMaster::Receiver::PacketStatusState::execute( Packet & packet )
 {
-  if( packet.is_empty() )
-  {
-    return nextState_;
-  }
-  else
-  {
-    return returnState_;
-  }
+  if( packet.num_items_in() == packet.getSize() ) {
+    interface_->MASTER.CTRLC = (1<<TWI_MASTER_CMD1_bp) | (1<<TWI_MASTER_CMD0_bp);
+    return nextState_; }
+  else {
+    interface_->MASTER.CTRLC = TWI_MASTER_CMD_RECVTRANS_gc;
+    return returnState_; }
 }
 
 I2CMaster::State * I2CMaster::Transmitter::DoneState::execute( Packet & packet )
