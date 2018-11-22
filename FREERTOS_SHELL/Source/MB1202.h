@@ -15,6 +15,7 @@
 #define ADDR_CHANGE_1 165
 
 #include "I2CMaster.h"
+#include "I2CAgent.h"
 #include "Command.h"
 #include "frt_queue.h"
 
@@ -35,7 +36,7 @@ public:
 		uint8_t commandCode_;
 	};
 	
-	MB1202 (I2CMaster* i2c);
+	MB1202 (I2CMaster * d);
 	
 	bool is_ready(void);
 	
@@ -47,8 +48,9 @@ public:
 
 protected:
 
-	I2CMaster* i2c;
-	uint8_t slave_addr;
+	I2CMaster * driver_;
+	I2CAgent * i2cAgent_;
+	uint8_t slaveAddr_;
 	uint8_t range_cmd[1];
 	uint8_t addr_change_seq[3] = {0};
 	uint8_t bytes_received[2] = {0};

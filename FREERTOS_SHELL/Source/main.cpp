@@ -35,6 +35,7 @@
 
 #include "I2CMaster.h"
 #include "MB1202.h"
+#include "I2CAgent.h"
 
 #include "task_user.h"                      // Header for user interface task
 #include "task_sonar.h"
@@ -46,8 +47,6 @@ frt_queue<int16_t> ang_queue(255,NULL,10);
 frt_queue<int16_t> A_queue(255,NULL,10);
 frt_queue<int16_t> B_queue(255,NULL,10);
 frt_queue<int16_t> C_queue(255,NULL,10);
-
-bool hi;
 
 // Electrical phase angle
 volatile int16_t angle = 0;
@@ -145,9 +144,11 @@ int main (void)
 	rs232 ser_dev(0,&USARTE0); // Create a serial device on USART E0
 	ser_dev << clrscr << "FreeRTOS Xmega Testing Program" << endl << endl;
 	
-	I2CMaster i2c (&TWIE, 62000);
+	I2CMaster i2c(&TWIE, 62000);
+
+	// I2CAgent i2cAgent();
 	
-	MB1202 mb1202 (&i2c);
+	// MB1202 mb1202(&i2c);
 	
 	
 	//hi = i2c.is_ready(85);
@@ -156,7 +157,7 @@ int main (void)
 	// but it is desired to exercise the RTOS more thoroughly in this test program
 	new task_user ("UserInt", task_priority (0), 128, &ser_dev);
 	
-	new task_sonar ("Sonar", task_priority (2), 128, &ser_dev, &mb1202);
+	// new task_sonar ("Sonar", task_priority (2), 128, &ser_dev, &mb1202);
 	
 	// Enable high level interrupts and global interrupts
 	PMIC_CTRL = (1 << PMIC_HILVLEN_bp | 1 << PMIC_MEDLVLEN_bp | 1 << PMIC_LOLVLEN_bp);
