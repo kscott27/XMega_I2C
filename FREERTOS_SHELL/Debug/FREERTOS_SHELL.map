@@ -89,7 +89,7 @@ Discarded input sections
                 0x00000000       0x12 Source/I2CAgent.o
  .rodata._ZTV8I2CAgent
                 0x00000000        0xe Source/I2CAgent.o
- .debug_info    0x00000000     0x14fc Source/I2CAgent.o
+ .debug_info    0x00000000     0x1506 Source/I2CAgent.o
  .debug_abbrev  0x00000000      0x424 Source/I2CAgent.o
  .debug_loc     0x00000000      0x17a Source/I2CAgent.o
  .debug_aranges
@@ -255,14 +255,14 @@ Discarded input sections
                 0x00000000        0xe Source/MB1202.o
  .rodata._ZTVN6MB120212RangeCommandE
                 0x00000000        0x6 Source/MB1202.o
- .debug_info    0x00000000     0x1f83 Source/MB1202.o
- .debug_abbrev  0x00000000      0x4f6 Source/MB1202.o
- .debug_loc     0x00000000      0xba4 Source/MB1202.o
+ .debug_info    0x00000000     0x1fb5 Source/MB1202.o
+ .debug_abbrev  0x00000000      0x503 Source/MB1202.o
+ .debug_loc     0x00000000      0xbcc Source/MB1202.o
  .debug_aranges
                 0x00000000       0xd8 Source/MB1202.o
  .debug_ranges  0x00000000       0xc8 Source/MB1202.o
  .debug_line    0x00000000      0x585 Source/MB1202.o
- .debug_str     0x00000000     0x13ed Source/MB1202.o
+ .debug_str     0x00000000     0x13f8 Source/MB1202.o
  .comment       0x00000000       0x31 Source/MB1202.o
  .debug_frame   0x00000000      0x28c Source/MB1202.o
  .text          0x00000000        0x0 Source/Packet.o

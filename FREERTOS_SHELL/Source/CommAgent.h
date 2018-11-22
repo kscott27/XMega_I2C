@@ -10,9 +10,9 @@
 class CommAgent
 {
 public:
-  CommAgent()
-    : inPacket_(10,NULL,10),
-      outPacket_(10,NULL,10)
+  CommAgent( uint8_t packetSize = 10 )
+    : inPacket_(packetSize,NULL,10),
+      outPacket_(packetSize,NULL,10)
   { }
   virtual bool transmit( Command & cmd ) = 0;
   virtual bool receive() = 0;

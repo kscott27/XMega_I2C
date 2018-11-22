@@ -15,7 +15,9 @@ public:
 
   typedef frt_queue< uint8_t > Packet;
 
-  inline I2CAgent() {}
+  inline I2CAgent( uint8_t packetSize = 10 ) 
+    : CommAgent(packetSize)
+  {}
   virtual bool transmit( Command & cmd );
   virtual bool receive();
   void setI2CDriver( I2CMaster * d ) { driver_ = d; }
