@@ -80,6 +80,11 @@ I2CMaster::I2CMaster(TWI_t * interface, uint32_t i2c_freq, emstream * s)
   interface->MASTER.CTRLA = TWI_MASTER_ENABLE_bm;
 }
 
+void I2CMaster::scanBus()
+{
+
+}
+
 I2CMaster::Transmitter::Transmitter( I2CMaster * d )
   : driver_(d),
     timeout_(10000),

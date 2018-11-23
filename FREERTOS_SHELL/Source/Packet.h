@@ -17,6 +17,7 @@ public:
       size_(queue_size)
   { }
   uint8_t getSize() const { return size_; }
+  void resetContent();
 protected:
   uint8_t size_;
 };

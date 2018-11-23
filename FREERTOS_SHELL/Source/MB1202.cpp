@@ -30,21 +30,21 @@ void MB1202::RangeCommand::writePacket( Packet & packet )
 	packet.put(commandCode_);
 }
 
-bool MB1202::is_ready (void)
+bool MB1202::is_ready()
 {
 	return driver_->is_ready(slaveAddr_);
 }
 
-bool MB1202::take_reading (void)
+bool MB1202::takeReading()
 {
 	return i2cAgent_->transmit(*rangeCommand_);
 }
 
-uint16_t MB1202::get_reading (void)
+uint16_t MB1202::getReading()
 {
 	Packet & data = i2cAgent_->receive();
-	range_reading = ((uint16_t) data.get() << 8) | ((uint16_t) data.get());
-	return range_reading;
+	rangeReading_ = ((uint16_t) data.get() << 8) | ((uint16_t) data.get());
+	return rangeReading_;
 }
 
 void MB1202::change_slave_addr(uint8_t new_addr)

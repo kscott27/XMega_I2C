@@ -21,7 +21,7 @@
 class I2CMaster
 {
 public:
-
+  
   class State
   {
   public:
@@ -229,45 +229,29 @@ public:
   TWI_t *       getInterfacePtr() { return interface_; }
   emstream &    getSerial()       { return *p_serial; }
   
-  void set_baudrate (uint32_t i2c_freq);
-  
-  uint8_t* scan (void);
-  
+  void set_baudrate (uint32_t i2c_freq); 
+  uint8_t * scan (void);
   bool is_ready (uint8_t addr);
-  
   bool write (uint8_t slave_addr, uint8_t* data, uint8_t packet_len, uint16_t timeout=1000);
-  
   bool mem_write (uint8_t slave_addr, uint8_t mem_addr, uint8_t* data, uint8_t packet_len, uint16_t timeout=100000);
-  
   bool read (uint8_t slave_addr, uint8_t* data, uint8_t packet_len, uint16_t timeout=1000);
-  
   bool mem_read (uint8_t slave_addr, uint8_t mem_addr, uint8_t* data, uint8_t packet_len, uint16_t timeout=100000);
-  
   void I2CInitWrite(void);
-  
   void I2CInitRead(void);
-  
   void I2CWriteDataTrans(void);
-  
   void I2CReadDataTrans(void);
-  
   void I2CAckStop(void);
-  
   void send_start(void);
-  
   void byte_recv(void);
-  
   void send_ack(void);
-  
   void send_rep_start(void);
-  
   void send_nack_stop(void);
-  
   void send_ack_stop(void);
-  
   void send_stop(void);
 
 protected:
+
+  void scanBus();
 
   Transmitter * transmitter_;
   Receiver * receiver_;
@@ -276,7 +260,6 @@ protected:
   PORT_t* bus_port;
   uint8_t baudrate;
   uint32_t i2c_freq;
-  
   uint8_t addr_list[10];
 
 };

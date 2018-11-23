@@ -40,9 +40,9 @@ public:
 	
 	bool is_ready(void);
 	
-	bool take_reading(void);
+	bool takeReading(void);
 	
-	uint16_t get_reading(void);
+	uint16_t getReading(void);
 	
 	void change_slave_addr(uint8_t new_addr);
 
@@ -54,7 +54,7 @@ protected:
 	uint8_t range_cmd[1];
 	uint8_t addr_change_seq[3] = {0};
 	uint8_t bytes_received[2] = {0};
-	uint16_t range_reading;
+	uint16_t rangeReading_;
 	RangeCommand * rangeCommand_;
 	static const uint8_t outPacketSize_ = 2;
 	static const uint8_t inPacketSize_ = 2;

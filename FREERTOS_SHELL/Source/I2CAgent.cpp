@@ -35,8 +35,5 @@ void I2CAgent::readPacket()
 
 void I2CAgent::resetPacket( Packet & packet )
 {
-  while( packet.not_empty() )
-  {
-    packet.get();
-  }
+  packet.resetContent();
 }

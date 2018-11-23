@@ -36,7 +36,8 @@ task_sonar::task_sonar (const char* a_name,
 					  emstream* p_ser_dev,
 					  MB1202* mb1202
 					 )
-	: frt_task (a_name, a_priority, a_stack_size, p_ser_dev), mb1202(mb1202)
+	: frt_task (a_name, a_priority, a_stack_size, p_ser_dev), 
+		mb1202_(mb1202)
 {
 	task_name = a_name;
 }
@@ -69,7 +70,7 @@ void task_sonar::run (void)
 			case (0):
 			    
 				//*p_serial << PMS ("Sonar ready: ") << mb1202->take_reading() << endl;
-				mb1202->take_reading();	
+				mb1202_->takeReading();	
 				
 				transition_to(1);			
 			
@@ -77,8 +78,8 @@ void task_sonar::run (void)
 				
 			case (1):
 			
-				range_reading = mb1202->get_reading();
-				*p_serial << PMS ("Sonar: ") << range_reading << endl;
+				rangeReading_ = mb1202_->getReading();
+				*p_serial << PMS ("Sonar: ") << rangeReading_ << endl;
 				
 				transition_to(0);
 				

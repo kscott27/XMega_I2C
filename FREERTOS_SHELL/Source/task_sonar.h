@@ -46,8 +46,8 @@ private:
 
 protected:
 
-    uint16_t range_reading;
-	MB1202* mb1202;
+  uint16_t rangeReading_;
+	MB1202 * mb1202_;
 	
 	// This method displays a simple help message telling the user what to do. It's
 	// protected so that only methods of this class or possibly descendents can use it

@@ -144,7 +144,7 @@ int main (void)
 	rs232 ser_dev(0,&USARTE0); // Create a serial device on USART E0
 	ser_dev << clrscr << "FreeRTOS Xmega Testing Program" << endl << endl;
 	
-	I2CMaster i2c(&TWIE, 62000);
+	I2CMaster i2c(&TWIE, 62000, &ser_dev);
 
 	// I2CAgent i2cAgent();
 	
