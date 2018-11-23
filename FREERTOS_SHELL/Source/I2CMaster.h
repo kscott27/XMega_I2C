@@ -15,6 +15,7 @@
 #include <avr/interrupt.h>
 #include "frt_queue.h"
 #include "Packet.h"
+#include "emstream.h"
 
 
 class I2CMaster
@@ -33,6 +34,7 @@ public:
       returnState_ = returnState;
     }
     virtual State * execute( Packet & packet ) = 0;
+    virtual void serialDebug() {}
     void resetRunCount() { runs_ = 0; }
 
   protected:
@@ -49,6 +51,7 @@ public:
       : driver_(d)
     { }
     State * execute( Packet & packet );
+    void serialDebug() { driver_->getSerial() << "start" << endl; }
   protected:
     I2CMaster * driver_;
   };
@@ -62,6 +65,7 @@ public:
         timeout_(timeout)
     { }
     State * execute( Packet & packet );
+    void serialDebug() { driver_->getSerial() << "status" << endl; }
   protected:
     I2CMaster * driver_;
     uint16_t timeout_;
@@ -75,6 +79,7 @@ public:
       : driver_(d)
     { }
     State * execute( Packet & packet );
+    void serialDebug() { driver_->getSerial() << "done" << endl; }
   protected:
     I2CMaster * driver_;
   };
@@ -87,6 +92,7 @@ public:
       : driver_(d)
     { }
     State * execute( Packet & packet );
+    void serialDebug() { driver_->getSerial() << "error" << endl; }
   protected:
     I2CMaster * driver_;
   };
@@ -107,6 +113,7 @@ public:
           timeout_(timeout)
       { }
       State * execute( Packet & packet );
+      void serialDebug() { driver_->getSerial() << "r status" << endl; }
     protected:
       I2CMaster * driver_;
       uint16_t timeout_;
@@ -120,6 +127,7 @@ public:
         : driver_(d)
       { }
       State * execute( Packet & packet );
+      void serialDebug() { driver_->getSerial() << "r exchange" << endl; }
     protected:
       I2CMaster * driver_;
     };
@@ -132,6 +140,7 @@ public:
         : driver_(d)
       { }
       State * execute( Packet & packet );
+      void serialDebug() { driver_->getSerial() << "r packet" << endl; }
     protected:
       I2CMaster * driver_;
     };
@@ -166,6 +175,7 @@ public:
           timeout_(timeout)
       { }
       State * execute( Packet & packet );
+      void serialDebug() { driver_->getSerial() << "t status" << endl; }
     protected:
       I2CMaster * driver_;
       uint16_t timeout_;
@@ -179,6 +189,7 @@ public:
         : driver_(d)
       { }
       State * execute( Packet & packet );
+      void serialDebug() { driver_->getSerial() << "t exchange" << endl; }
     protected:
       I2CMaster * driver_;
     };
@@ -191,6 +202,7 @@ public:
         : driver_(d)
       { }
       State * execute( Packet & packet );
+      void serialDebug() { driver_->getSerial() << "t packet" << endl; }
     protected:
       I2CMaster * driver_;
     };
@@ -210,10 +222,12 @@ public:
   };
   
   I2CMaster(TWI_t * interface, uint32_t i2c_freq);
+  I2CMaster(TWI_t * interface, uint32_t i2c_freq, emstream * s);
 
   Transmitter * getTransmitter()  { return transmitter_; }
   Receiver *    getReceiver()     { return receiver_; }
   TWI_t *       getInterfacePtr() { return interface_; }
+  emstream &    getSerial()       { return *p_serial; }
   
   void set_baudrate (uint32_t i2c_freq);
   
@@ -258,6 +272,7 @@ protected:
   Transmitter * transmitter_;
   Receiver * receiver_;
   TWI_t* interface_;
+  emstream * p_serial;
   PORT_t* bus_port;
   uint8_t baudrate;
   uint32_t i2c_freq;

@@ -43,6 +43,43 @@ I2CMaster::I2CMaster(TWI_t * interface, uint32_t i2c_freq)
   interface->MASTER.CTRLA = TWI_MASTER_ENABLE_bm;
 }
 
+I2CMaster::I2CMaster(TWI_t * interface, uint32_t i2c_freq, emstream * s)
+  : interface_(interface), 
+    i2c_freq(i2c_freq),
+    transmitter_(new Transmitter(this)),
+    receiver_(new Receiver(this)),
+    p_serial(s)
+{ 
+  if (interface == &TWIC)
+  {
+    bus_port = &PORTC;
+  }
+  if (interface == &TWIE)
+  {
+    bus_port = &PORTE;
+  }
+  
+  bus_port->DIRSET = PIN0_bm | PIN1_bm;
+  bus_port->PIN0CTRL = PORT_OPC_WIREDANDPULL_gc; //SDA pull up output
+  bus_port->PIN1CTRL = PORT_OPC_WIREDANDPULL_gc; //SCL pull up output
+  
+  interface->MASTER.CTRLB = 1 << 1;
+  
+  set_baudrate(i2c_freq); //baud rate is set such that TWI freq=100KHz
+  
+//  ptwiport->CTRL=0x00; //SDA hold time off, normal TWI operation
+  
+//  ptwiport->MASTER.CTRLA = TWI_MASTER_INTLVL_HI_gc|TWI_MASTER_RIEN_bm|TWI_MASTER_WIEN_bm|TWI_MASTER_ENABLE_bm; //enable high priority read and write interrupt, enable MASTER
+  
+//  ptwiport->MASTER.CTRLB = 0x00; //TWI_MASTER_QCEN_bm; //no inactive bus timeout, quick command and smart mode enabled
+  
+//  ptwiport->MASTER.CTRLC = 0x00; //initially send ACK and no CMD selected
+
+  interface->MASTER.STATUS |= TWI_MASTER_RIF_bm | TWI_MASTER_WIF_bm | TWI_MASTER_ARBLOST_bm | TWI_MASTER_BUSERR_bm | TWI_MASTER_BUSSTATE_IDLE_gc; //clear all flags initially and select bus state IDLE
+
+  interface->MASTER.CTRLA = TWI_MASTER_ENABLE_bm;
+}
+
 I2CMaster::Transmitter::Transmitter( I2CMaster * d )
   : driver_(d),
     timeout_(10000),
@@ -81,8 +118,12 @@ bool I2CMaster::Transmitter::run( Packet & packet )
   
   while( (currentState_ != doneState_) || (currentState_ != errorState_) )
   {
-    currentState_ = currentState_->execute(packet);
+    State * transitionState = currentState_->execute(packet);
+    currentState_->serialDebug();
+    currentState_ = transitionState;
   }
+
+  currentState_->serialDebug();
 
   if( currentState_ == doneState_ )
   {
@@ -100,8 +141,12 @@ Packet & I2CMaster::Receiver::run( Packet & packet )
   
   while( (currentState_ != doneState_) || (currentState_ != errorState_) )
   {
-    currentState_ = currentState_->execute(packet);
+    State * transitionState = currentState_->execute(packet);
+    currentState_->serialDebug();
+    currentState_ = transitionState;
   }
+
+  currentState_->serialDebug();
 
   return packet;
 }
