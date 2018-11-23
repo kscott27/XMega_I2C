@@ -160,6 +160,7 @@ I2CMaster::State * I2CMaster::StartState::execute( Packet & packet )
 {
   uint8_t * startCommand;
   packet.get(startCommand);
+  send_start();
   driver_->getInterfacePtr()->MASTER.ADDR = *startCommand;
   return nextState_;
 }
@@ -169,14 +170,16 @@ I2CMaster::State * I2CMaster::Transmitter::StatusState::execute( Packet & packet
   volatile uint16_t counter;
   counter = timeout_;
   // Need to figure out which status bit to be checking
-  while( (--counter != 0) && (driver_->getInterfacePtr()->MASTER.STATUS & (TWI_MASTER_RXACK_bm | TWI_MASTER_WIF_bm)) ){ }
-  if( counter == 0 )
+  while( ( --counter != 0 ) && 
+         ( !(driver_->getInterfacePtr()->MASTER.STATUS) & TWI_MASTER_WIF_bm ) ) { }
+  if( (!(driver_->getInterfacePtr()->MASTER.STATUS) & TWI_MASTER_RXACK_bm) &&
+        (driver_->getInterfacePtr()->MASTER.STATUS & TWI_MASTER_WIF_bm) )
   {
-    return returnState_;
+    return nextState_;
   }
   else
   {
-    return nextState_;
+    return returnState_;
   }
 }
 
@@ -185,11 +188,13 @@ I2CMaster::State * I2CMaster::Receiver::StatusState::execute( Packet & packet )
   volatile uint16_t counter;
   counter = timeout_;
   // Need to figure out which status bit to be checking
-  while( (--counter != 0) && (driver_->getInterfacePtr()->MASTER.STATUS & (TWI_MASTER_RXACK_bm | TWI_MASTER_RIF_bm)) ){ }
-  if( counter == 0 ) {
-    return returnState_; }
-  else {
+  while( ( --counter != 0) && 
+         ( !(driver_->getInterfacePtr()->MASTER.STATUS) & TWI_MASTER_RIF_bm ) ){ }
+  if( (!(driver_->getInterfacePtr()->MASTER.STATUS) & TWI_MASTER_RXACK_bm) &&
+        (driver_->getInterfacePtr()->MASTER.STATUS & TWI_MASTER_RIF_bm) ) {
     return nextState_; }
+  else {
+    return returnState_; }
 }
 
 I2CMaster::State * I2CMaster::Transmitter::ExchangeState::execute( Packet & packet )
@@ -225,7 +230,7 @@ I2CMaster::State * I2CMaster::Transmitter::PacketStatusState::execute( Packet & 
 I2CMaster::State * I2CMaster::Receiver::PacketStatusState::execute( Packet & packet )
 {
   if( packet.num_items_in() == packet.getSize() ) {
-    driver_->send_ack_stop();
+    driver_->send_nack_stop();
     return nextState_; }
   else {
     driver_->byte_recv();
