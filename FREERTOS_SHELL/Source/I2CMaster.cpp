@@ -7,10 +7,11 @@
 
 #include "I2CMaster.h"
 
-I2CMaster::I2CMaster(TWI_t* interface, uint32_t i2c_freq)
-  : interface(interface), 
+I2CMaster::I2CMaster(TWI_t * interface, uint32_t i2c_freq)
+  : interface_(interface), 
     i2c_freq(i2c_freq),
-    transmitter_( new Transmitter(interface) )
+    transmitter_(new Transmitter(this)),
+    receiver_(new Receiver(this))
 { 
   if (interface == &TWIC)
   {
@@ -42,14 +43,15 @@ I2CMaster::I2CMaster(TWI_t* interface, uint32_t i2c_freq)
   interface->MASTER.CTRLA = TWI_MASTER_ENABLE_bm;
 }
 
-I2CMaster::Transmitter::Transmitter( TWI_t * interface )
-  : timeout_(10000),
-    startState_(new StartState( interface )),
-    statusState_(new StatusState( interface, timeout_ )),
-    exchangeState_(new ExchangeState( interface )),
-    packetStatusState_(new PacketStatusState( interface )),
-    doneState_(new DoneState( interface )),
-    errorState_(new ErrorState( interface ))
+I2CMaster::Transmitter::Transmitter( I2CMaster * d )
+  : driver_(d),
+    timeout_(10000),
+    startState_(new StartState( d )),
+    statusState_(new StatusState( d, timeout_ )),
+    exchangeState_(new ExchangeState( d )),
+    packetStatusState_(new PacketStatusState( d )),
+    doneState_(new DoneState( d )),
+    errorState_(new ErrorState( d ))
 {
   startState_->setTransition(statusState_, statusState_);
   statusState_->setTransition(exchangeState_, errorState_);
@@ -57,14 +59,15 @@ I2CMaster::Transmitter::Transmitter( TWI_t * interface )
   packetStatusState_->setTransition(doneState_, statusState_);
 }
 
-I2CMaster::Receiver::Receiver( TWI_t * interface )
-  : timeout_(10000),
-    startState_(new StartState( interface )),
-    statusState_(new StatusState( interface, timeout_ )),
-    exchangeState_(new ExchangeState( interface )),
-    packetStatusState_(new PacketStatusState( interface )),
-    doneState_(new DoneState( interface )),
-    errorState_(new ErrorState( interface ))
+I2CMaster::Receiver::Receiver( I2CMaster * d )
+  : driver_(d),
+    timeout_(10000),
+    startState_(new StartState( d )),
+    statusState_(new StatusState( d, timeout_ )),
+    exchangeState_(new ExchangeState( d )),
+    packetStatusState_(new PacketStatusState( d )),
+    doneState_(new DoneState( d )),
+    errorState_(new ErrorState( d ))
 {
   startState_->setTransition(statusState_, statusState_);
   statusState_->setTransition(exchangeState_, errorState_);
@@ -103,15 +106,9 @@ Packet & I2CMaster::Receiver::run( Packet & packet )
   return packet;
 }
 
-I2CMaster::State * I2CMaster::Transmitter::StartState::execute( Packet & packet )
+I2CMaster::State * I2CMaster::StartState::execute( Packet & packet )
 {
-  interface_->MASTER.ADDR = packet.get();
-  return nextState_;
-}
-
-I2CMaster::State * I2CMaster::Receiver::StartState::execute( Packet & packet )
-{
-  interface_->MASTER.ADDR = packet.get();
+  driver_->getInterfacePtr()->MASTER.ADDR = packet.get();
   return nextState_;
 }
 
@@ -120,7 +117,7 @@ I2CMaster::State * I2CMaster::Transmitter::StatusState::execute( Packet & packet
   volatile uint16_t counter;
   counter = timeout_;
   // Need to figure out which status bit to be checking
-  while( (--counter != 0) && (interface_->MASTER.STATUS & (TWI_MASTER_RXACK_bm | TWI_MASTER_WIF_bm)) ){ }
+  while( (--counter != 0) && (driver_->getInterfacePtr()->MASTER.STATUS & (TWI_MASTER_RXACK_bm | TWI_MASTER_WIF_bm)) ){ }
   if( counter == 0 )
   {
     return returnState_;
@@ -136,7 +133,7 @@ I2CMaster::State * I2CMaster::Receiver::StatusState::execute( Packet & packet )
   volatile uint16_t counter;
   counter = timeout_;
   // Need to figure out which status bit to be checking
-  while( (--counter != 0) && (interface_->MASTER.STATUS & (TWI_MASTER_RXACK_bm | TWI_MASTER_RIF_bm)) ){ }
+  while( (--counter != 0) && (driver_->getInterfacePtr()->MASTER.STATUS & (TWI_MASTER_RXACK_bm | TWI_MASTER_RIF_bm)) ){ }
   if( counter == 0 ) {
     return returnState_; }
   else {
@@ -147,14 +144,14 @@ I2CMaster::State * I2CMaster::Transmitter::ExchangeState::execute( Packet & pack
 {
   if( packet.not_empty() )
   {
-    interface_->MASTER.DATA = packet.get();
+    driver_->getInterfacePtr()->MASTER.DATA = packet.get();
   }
   return nextState_;
 }
 
 I2CMaster::State * I2CMaster::Receiver::ExchangeState::execute( Packet & packet )
 {
-  uint8_t data = interface_->MASTER.DATA;
+  uint8_t data = driver_->getInterfacePtr()->MASTER.DATA;
   packet.put(data);
   return nextState_;
 }
@@ -174,19 +171,21 @@ I2CMaster::State * I2CMaster::Transmitter::PacketStatusState::execute( Packet & 
 I2CMaster::State * I2CMaster::Receiver::PacketStatusState::execute( Packet & packet )
 {
   if( packet.num_items_in() == packet.getSize() ) {
-    interface_->MASTER.CTRLC = (1<<TWI_MASTER_CMD1_bp) | (1<<TWI_MASTER_CMD0_bp);
+    // interface_->MASTER.CTRLC = (1<<TWI_MASTER_CMD1_bp) | (1<<TWI_MASTER_CMD0_bp);
+    driver_->send_ack_stop();
     return nextState_; }
   else {
-    interface_->MASTER.CTRLC = TWI_MASTER_CMD_RECVTRANS_gc;
+    // interface_->MASTER.CTRLC = TWI_MASTER_CMD_RECVTRANS_gc;
+    driver_->byte_recv();
     return returnState_; }
 }
 
-I2CMaster::State * I2CMaster::Transmitter::DoneState::execute( Packet & packet )
+I2CMaster::State * I2CMaster::DoneState::execute( Packet & packet )
 {
   return nextState_;
 }
 
-I2CMaster::State * I2CMaster::Transmitter::ErrorState::execute( Packet & packet )
+I2CMaster::State * I2CMaster::ErrorState::execute( Packet & packet )
 {
   return nextState_;
 }
@@ -194,7 +193,7 @@ I2CMaster::State * I2CMaster::Transmitter::ErrorState::execute( Packet & packet 
 void I2CMaster::set_baudrate(uint32_t i2c_freq)
 {
   baudrate = (F_CPU / (2 * i2c_freq)) - 5;
-  interface->MASTER.BAUD = baudrate;
+  interface_->MASTER.BAUD = baudrate;
 }
 
 uint8_t* I2CMaster::scan (void)
@@ -207,9 +206,9 @@ uint8_t* I2CMaster::scan (void)
   for (uint8_t addr = 0; addr < 128; addr++)
   {
     counter = 100;
-    interface->MASTER.ADDR = addr << 1;
+    interface_->MASTER.ADDR = addr << 1;
     
-    while ((--counter != 0) && (interface->MASTER.STATUS & TWI_MASTER_RXACK_bm)){ }
+    while ((--counter != 0) && (interface_->MASTER.STATUS & TWI_MASTER_RXACK_bm)){ }
     if(counter != 0)
     {
       addr_list[addr_list_index] = addr;
@@ -225,9 +224,9 @@ bool I2CMaster::is_ready (uint8_t addr)
 {
   volatile uint16_t counter = 500;
   
-  interface->MASTER.ADDR = addr << 1;
+  interface_->MASTER.ADDR = addr << 1;
   
-  while ((--counter != 0) && (interface->MASTER.STATUS & TWI_MASTER_RXACK_bm)){ }
+  while ((--counter != 0) && (interface_->MASTER.STATUS & TWI_MASTER_RXACK_bm)){ }
   if(counter != 0)
   {
     send_nack_stop();
@@ -245,26 +244,26 @@ bool I2CMaster::write (uint8_t slave_addr, uint8_t* data, uint8_t packet_len, ui
   counter = timeout;
   //data_out = data;
   
-  interface->MASTER.ADDR = slave_addr << 1;
+  interface_->MASTER.ADDR = slave_addr << 1;
   
-  while ((--counter != 0) && !(interface->MASTER.STATUS & TWI_MASTER_WIF_bm)){ }
+  while ((--counter != 0) && !(interface_->MASTER.STATUS & TWI_MASTER_WIF_bm)){ }
   if (counter != 0)
   {
     for (uint8_t i = 0; i < packet_len; i++)
     {
       counter = timeout;
-      interface->MASTER.DATA = data[i];
-      while ((--counter != 0) && (interface->MASTER.STATUS & TWI_MASTER_RXACK_bm)){ }
+      interface_->MASTER.DATA = data[i];
+      while ((--counter != 0) && (interface_->MASTER.STATUS & TWI_MASTER_RXACK_bm)){ }
       if (counter == 0)
       {
         return false;
       }
       else
       {
-        interface->MASTER.STATUS |= TWI_MASTER_WIF_bm;
+        interface_->MASTER.STATUS |= TWI_MASTER_WIF_bm;
       }
     }
-    //interface->MASTER.STATUS |= 1 << 6;
+    //interface_->MASTER.STATUS |= 1 << 6;
     send_stop();
     return true;  
   }
@@ -279,21 +278,21 @@ bool I2CMaster::mem_write (uint8_t slave_addr, uint8_t mem_addr, uint8_t* data, 
   volatile uint16_t counter;
   counter = timeout;
   
-  interface->MASTER.ADDR = slave_addr << 1;
+  interface_->MASTER.ADDR = slave_addr << 1;
   
-  while ((--counter != 0) && (interface->MASTER.STATUS & TWI_MASTER_RXACK_bm)){ }
+  while ((--counter != 0) && (interface_->MASTER.STATUS & TWI_MASTER_RXACK_bm)){ }
   if (counter != 0)
   {
-    interface->MASTER.DATA = mem_addr;
+    interface_->MASTER.DATA = mem_addr;
     
-    while ((--counter != 0) && (interface->MASTER.STATUS & TWI_MASTER_RXACK_bm)){ }
+    while ((--counter != 0) && (interface_->MASTER.STATUS & TWI_MASTER_RXACK_bm)){ }
     if (counter != 0)
     {
       for (uint8_t i = 0; i < packet_len; i++)
       {
         counter = timeout;
-        interface->MASTER.DATA = data[i];
-        while ((--counter != 0) && (interface->MASTER.STATUS & TWI_MASTER_RXACK_bm)){ }
+        interface_->MASTER.DATA = data[i];
+        while ((--counter != 0) && (interface_->MASTER.STATUS & TWI_MASTER_RXACK_bm)){ }
         if (counter == 0)
         {
           return false;
@@ -319,27 +318,27 @@ bool I2CMaster::read (uint8_t slave_addr, uint8_t* data, uint8_t packet_len, uin
   volatile uint8_t i;
   counter = timeout;
   
-  interface->MASTER.ADDR = slave_addr << 1 | 1 << 0;
+  interface_->MASTER.ADDR = slave_addr << 1 | 1 << 0;
   
-  while ((--counter != 0) && !(interface->MASTER.STATUS & TWI_MASTER_RIF_bm)){ }
+  while ((--counter != 0) && !(interface_->MASTER.STATUS & TWI_MASTER_RIF_bm)){ }
   if (counter != 0)
   {
     for (i = 0; i < packet_len; ++i)
     {
       counter = timeout;
-      while ((--counter != 0) && !(interface->MASTER.STATUS & TWI_MASTER_RIF_bm)){ }      
+      while ((--counter != 0) && !(interface_->MASTER.STATUS & TWI_MASTER_RIF_bm)){ }      
       if (counter != 0)
       {
-        data[i] = interface->MASTER.DATA;
+        data[i] = interface_->MASTER.DATA;
         if (i < packet_len)
         {
           byte_recv();
-          interface->MASTER.STATUS |= TWI_MASTER_RIF_bm;
+          interface_->MASTER.STATUS |= TWI_MASTER_RIF_bm;
         }
         else
         {
           send_nack_stop();
-          interface->MASTER.STATUS |= TWI_MASTER_RIF_bm;
+          interface_->MASTER.STATUS |= TWI_MASTER_RIF_bm;
           return true;
         }
       }
@@ -358,36 +357,36 @@ bool I2CMaster::read (uint8_t slave_addr, uint8_t* data, uint8_t packet_len, uin
 
 void I2CMaster::send_start(void)
 {
-  interface->MASTER.CTRLC |= (1<<TWI_MASTER_CMD0_bp);
+  interface_->MASTER.CTRLC |= (1<<TWI_MASTER_CMD0_bp);
 }
 
 void I2CMaster::byte_recv(void)
 {
-  interface->MASTER.CTRLC = TWI_MASTER_CMD_RECVTRANS_gc;
+  interface_->MASTER.CTRLC = TWI_MASTER_CMD_RECVTRANS_gc;
 }
 
 void I2CMaster::send_ack()
 {
-  //interface->MASTER.CTRLC = interface->MASTER.STATUS & ~(TWI_MASTER_RXACK_bm);
-  interface->MASTER.CTRLC = 0x00;
+  //interface_->MASTER.CTRLC = interface_->MASTER.STATUS & ~(TWI_MASTER_RXACK_bm);
+  interface_->MASTER.CTRLC = 0x00;
 }
 
 void I2CMaster::send_rep_start(void)
 {
-  interface->MASTER.CTRLC |= TWI_MASTER_CMD_REPSTART_gc;
+  interface_->MASTER.CTRLC |= TWI_MASTER_CMD_REPSTART_gc;
 }
 
 void I2CMaster::send_nack_stop(void)
 {
-  interface->MASTER.CTRLC = TWI_MASTER_ACKACT_bm | TWI_MASTER_CMD_STOP_gc;
+  interface_->MASTER.CTRLC = TWI_MASTER_ACKACT_bm | TWI_MASTER_CMD_STOP_gc;
 }
 
 void I2CMaster::send_ack_stop(void)
 {
-  interface->MASTER.CTRLC = (1<<TWI_MASTER_CMD1_bp) | (1<<TWI_MASTER_CMD0_bp);
+  interface_->MASTER.CTRLC = (1<<TWI_MASTER_CMD1_bp) | (1<<TWI_MASTER_CMD0_bp);
 }
 
 void I2CMaster::send_stop(void)
 {
-  interface->MASTER.CTRLC = TWI_MASTER_CMD_STOP_gc;
+  interface_->MASTER.CTRLC = TWI_MASTER_CMD_STOP_gc;
 }

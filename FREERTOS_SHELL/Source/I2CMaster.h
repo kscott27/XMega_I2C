@@ -41,36 +41,74 @@ public:
     uint8_t runs_;
   };
 
+  class StartState
+    : public State
+  {
+  public:
+    inline StartState( I2CMaster * d )
+      : driver_(d)
+    { }
+    State * execute( Packet & packet );
+  protected:
+    I2CMaster * driver_;
+  };
+
+  class StatusState
+    : public State
+  {
+  public:
+    inline StatusState( I2CMaster * d, uint16_t timeout )
+      : driver_(d),
+        timeout_(timeout)
+    { }
+    State * execute( Packet & packet );
+  protected:
+    I2CMaster * driver_;
+    uint16_t timeout_;
+  };
+
+  class DoneState
+    : public State
+  {
+  public:
+    inline DoneState( I2CMaster * d )
+      : driver_(d)
+    { }
+    State * execute( Packet & packet );
+  protected:
+    I2CMaster * driver_;
+  };
+
+  class ErrorState
+    : public State
+  {
+  public:
+    inline ErrorState( I2CMaster * d )
+      : driver_(d)
+    { }
+    State * execute( Packet & packet );
+  protected:
+    I2CMaster * driver_;
+  };
+
   class Receiver
   {
   public:
-    Receiver( TWI_t * interface );
+    Receiver( I2CMaster * d );
     Packet & run( Packet & packet );
 
   protected:
-    class StartState
-      : public State
-    {
-    public:
-      inline StartState( TWI_t * interface )
-        : interface_(interface)
-      { }
-      State * execute( Packet & packet );
-    protected:
-      TWI_t * interface_;
-    };
-
     class StatusState
       : public State
     {
     public:
-      inline StatusState( TWI_t * interface, uint16_t timeout )
-        : interface_(interface),
+      inline StatusState( I2CMaster * d, uint16_t timeout )
+        : driver_(d),
           timeout_(timeout)
       { }
       State * execute( Packet & packet );
     protected:
-      TWI_t * interface_;
+      I2CMaster * driver_;
       uint16_t timeout_;
     };
 
@@ -78,50 +116,27 @@ public:
       : public State
     {
     public:
-      inline ExchangeState( TWI_t * interface )
-        : interface_(interface)
+      inline ExchangeState( I2CMaster * d )
+        : driver_(d)
       { }
       State * execute( Packet & packet );
     protected:
-      TWI_t * interface_;
+      I2CMaster * driver_;
     };
 
     class PacketStatusState
       : public State
     {
     public:
-      inline PacketStatusState( TWI_t * interface )
-        : interface_(interface)
+      inline PacketStatusState( I2CMaster * d )
+        : driver_(d)
       { }
       State * execute( Packet & packet );
     protected:
-      TWI_t * interface_;
+      I2CMaster * driver_;
     };
 
-    class DoneState
-      : public State
-    {
-    public:
-      inline DoneState( TWI_t * interface )
-        : interface_(interface)
-      { }
-      State * execute( Packet & packet );
-    protected:
-      TWI_t * interface_;
-    };
-
-    class ErrorState
-      : public State
-    {
-    public:
-      inline ErrorState( TWI_t * interface )
-        : interface_(interface)
-      { }
-      State * execute( Packet & packet );
-    protected:
-      TWI_t * interface_;
-    };
-
+    I2CMaster * driver_;
     State * currentState_;
     State * startState_;
     State * statusState_;
@@ -138,33 +153,21 @@ public:
   class Transmitter
   {
   public:
-    Transmitter( TWI_t * interface );
+    Transmitter( I2CMaster * d );
     bool run( Packet & packet );
 
   protected:
-    class StartState
-      : public State
-    {
-    public:
-      inline StartState( TWI_t * interface )
-        : interface_(interface)
-      { }
-      State * execute( Packet & packet );
-    protected:
-      TWI_t * interface_;
-    };
-
     class StatusState
       : public State
     {
     public:
-      inline StatusState( TWI_t * interface, uint16_t timeout )
-        : interface_(interface),
+      inline StatusState( I2CMaster * d, uint16_t timeout )
+        : driver_(d),
           timeout_(timeout)
       { }
       State * execute( Packet & packet );
     protected:
-      TWI_t * interface_;
+      I2CMaster * driver_;
       uint16_t timeout_;
     };
 
@@ -172,50 +175,27 @@ public:
       : public State
     {
     public:
-      inline ExchangeState( TWI_t * interface )
-        : interface_(interface)
+      inline ExchangeState( I2CMaster * d )
+        : driver_(d)
       { }
       State * execute( Packet & packet );
     protected:
-      TWI_t * interface_;
+      I2CMaster * driver_;
     };
 
     class PacketStatusState
       : public State
     {
     public:
-      inline PacketStatusState( TWI_t * interface )
-        : interface_(interface)
+      inline PacketStatusState( I2CMaster * d )
+        : driver_(d)
       { }
       State * execute( Packet & packet );
     protected:
-      TWI_t * interface_;
+      I2CMaster * driver_;
     };
 
-    class DoneState
-      : public State
-    {
-    public:
-      inline DoneState( TWI_t * interface )
-        : interface_(interface)
-      { }
-      State * execute( Packet & packet );
-    protected:
-      TWI_t * interface_;
-    };
-
-    class ErrorState
-      : public State
-    {
-    public:
-      inline ErrorState( TWI_t * interface )
-        : interface_(interface)
-      { }
-      State * execute( Packet & packet );
-    protected:
-      TWI_t * interface_;
-    };
-
+    I2CMaster * driver_;
     State * currentState_;
     State * startState_;
     State * statusState_;
@@ -231,8 +211,9 @@ public:
   
   I2CMaster(TWI_t * interface, uint32_t i2c_freq);
 
-  Transmitter * getTransmitter() { return transmitter_; }
-  Receiver *    getReceiver()    { return receiver_; }
+  Transmitter * getTransmitter()  { return transmitter_; }
+  Receiver *    getReceiver()     { return receiver_; }
+  TWI_t *       getInterfacePtr() { return interface_; }
   
   void set_baudrate (uint32_t i2c_freq);
   
@@ -276,7 +257,7 @@ protected:
 
   Transmitter * transmitter_;
   Receiver * receiver_;
-  TWI_t* interface;
+  TWI_t* interface_;
   PORT_t* bus_port;
   uint8_t baudrate;
   uint32_t i2c_freq;
