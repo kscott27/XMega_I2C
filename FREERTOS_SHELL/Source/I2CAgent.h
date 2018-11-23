@@ -16,6 +16,10 @@ public:
   inline I2CAgent( uint8_t outPacketSize = 2, uint8_t inPacketSize = 1 ) 
     : CommAgent(outPacketSize, inPacketSize)
   {}
+  inline I2CAgent( emstream * s, uint8_t outPacketSize = 2, uint8_t inPacketSize = 1 ) 
+    : CommAgent(outPacketSize, inPacketSize),
+      p_serial(s)
+  {}
   virtual bool transmit( Command & cmd );
   virtual Packet & receive();
   void setI2CDriver( I2CMaster * d ) { driver_ = d; }
@@ -27,6 +31,7 @@ protected:
   virtual void readPacket();
   virtual void resetPacket( Packet & packet );
 
+  emstream * p_serial;
   I2CMaster * driver_;
   uint8_t slaveAddr_;
   uint8_t writeCommand_;

@@ -148,7 +148,7 @@ int main (void)
 
 	// I2CAgent i2cAgent();
 	
-	MB1202 mb1202(&i2c);
+	MB1202 mb1202(&i2c, &ser_dev);
 	
 	
 	//hi = i2c.is_ready(85);

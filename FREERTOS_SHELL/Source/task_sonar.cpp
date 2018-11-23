@@ -69,12 +69,12 @@ void task_sonar::run (void)
 			// proceeding to its routine.
 			case (0):
 			    
-				//*p_serial << PMS ("Sonar ready: ") << mb1202->take_reading() << endl;
+				*p_serial << "Range cmd" << endl;
 				mb1202_->takeReading();	
 				
 				transition_to(1);			
 			
-			    break;
+			  break;
 				
 			case (1):
 			
@@ -92,6 +92,6 @@ void task_sonar::run (void)
 
 		// No matter the state, wait for approximately a millisecond before we 
 		// run the loop again. This gives lower priority tasks a chance to run
-		vTaskDelay (configMS_TO_TICKS (500));
+		vTaskDelay (configMS_TO_TICKS (1000));
 	}
 }

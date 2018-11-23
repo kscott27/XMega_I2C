@@ -18,6 +18,7 @@
 #include "I2CAgent.h"
 #include "Command.h"
 #include "frt_queue.h"
+#include "emstream.h"
 
 class MB1202
 {
@@ -36,7 +37,8 @@ public:
 		uint8_t commandCode_;
 	};
 	
-	MB1202 (I2CMaster * d);
+	MB1202(I2CMaster * d);
+	MB1202( I2CMaster * d, emstream * s );
 	
 	bool is_ready(void);
 	
@@ -49,6 +51,7 @@ public:
 protected:
 
 	I2CMaster * driver_;
+	emstream * p_serial;
 	I2CAgent * i2cAgent_;
 	uint8_t slaveAddr_;
 	uint8_t range_cmd[1];

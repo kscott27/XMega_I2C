@@ -2,6 +2,7 @@
 
 bool I2CAgent::transmit( Command & cmd )
 {
+  *(driver_->getSerial()) << "trans" << endl;
   writePacket(cmd);
   bool status = driver_->getTransmitter()->run(outPacket_);
   return status;
