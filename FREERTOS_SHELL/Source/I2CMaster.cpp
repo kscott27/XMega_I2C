@@ -108,7 +108,9 @@ Packet & I2CMaster::Receiver::run( Packet & packet )
 
 I2CMaster::State * I2CMaster::StartState::execute( Packet & packet )
 {
-  driver_->getInterfacePtr()->MASTER.ADDR = packet.get();
+  uint8_t * startCommand;
+  packet.get(startCommand);
+  driver_->getInterfacePtr()->MASTER.ADDR = *startCommand;
   return nextState_;
 }
 
@@ -144,7 +146,9 @@ I2CMaster::State * I2CMaster::Transmitter::ExchangeState::execute( Packet & pack
 {
   if( packet.not_empty() )
   {
-    driver_->getInterfacePtr()->MASTER.DATA = packet.get();
+    uint8_t * data; 
+    packet.get(data);
+    driver_->getInterfacePtr()->MASTER.DATA = *data;
   }
   return nextState_;
 }
@@ -171,11 +175,9 @@ I2CMaster::State * I2CMaster::Transmitter::PacketStatusState::execute( Packet & 
 I2CMaster::State * I2CMaster::Receiver::PacketStatusState::execute( Packet & packet )
 {
   if( packet.num_items_in() == packet.getSize() ) {
-    // interface_->MASTER.CTRLC = (1<<TWI_MASTER_CMD1_bp) | (1<<TWI_MASTER_CMD0_bp);
     driver_->send_ack_stop();
     return nextState_; }
   else {
-    // interface_->MASTER.CTRLC = TWI_MASTER_CMD_RECVTRANS_gc;
     driver_->byte_recv();
     return returnState_; }
 }
