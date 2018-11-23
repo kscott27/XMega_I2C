@@ -160,7 +160,7 @@ I2CMaster::State * I2CMaster::StartState::execute( Packet & packet )
 {
   uint8_t * startCommand;
   packet.get(startCommand);
-  send_start();
+  driver_->send_start();
   driver_->getInterfacePtr()->MASTER.ADDR = *startCommand;
   return nextState_;
 }
