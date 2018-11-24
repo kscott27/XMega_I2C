@@ -32,7 +32,8 @@ Source/main.d Source/main.o: ../Source/main.cpp \
  ../Source/I2CMaster.h ../Source/Packet.h ../Source/MB1202.h \
  ../Source/I2CAgent.h ../Source/CommAgent.h ../Source/Command.h \
  ../Source/MMA8451.h ../Source/task_user.h \
- ../Source/lib/serial/ansi_terminal.h ../Source/task_sensor.h
+ ../Source/lib/serial/ansi_terminal.h ../Source/task_sensor.h \
+ ../Source/task_sonar.h
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\stdlib.h:
 
@@ -135,3 +136,5 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 ../Source/lib/serial/ansi_terminal.h:
 
 ../Source/task_sensor.h:
+
+../Source/task_sonar.h:

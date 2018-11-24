@@ -50,6 +50,7 @@ C_SRCS +=  \
 ../Source/MMA8451.cpp \
 ../Source/Packet.cpp \
 ../Source/task_sensor.cpp \
+../Source/task_sonar.cpp \
 ../Source/task_user.cpp \
 ../Source/lib/freertos/heap_2.c \
 ../Source/lib/freertos/list.c \
@@ -112,6 +113,7 @@ Source/MB1202.o \
 Source/MMA8451.o \
 Source/Packet.o \
 Source/task_sensor.o \
+Source/task_sonar.o \
 Source/task_user.o \
 Source/lib/freertos/heap_2.o \
 Source/lib/freertos/list.o \
@@ -167,6 +169,7 @@ Source/MB1202.o \
 Source/MMA8451.o \
 Source/Packet.o \
 Source/task_sensor.o \
+Source/task_sonar.o \
 Source/task_user.o \
 Source/lib/freertos/heap_2.o \
 Source/lib/freertos/list.o \
@@ -222,6 +225,7 @@ Source/MB1202.d \
 Source/MMA8451.d \
 Source/Packet.d \
 Source/task_sensor.d \
+Source/task_sonar.d \
 Source/task_user.d \
 Source/lib/freertos/heap_2.d \
 Source/lib/freertos/list.d \
@@ -277,6 +281,7 @@ Source/MB1202.d \
 Source/MMA8451.d \
 Source/Packet.d \
 Source/task_sensor.d \
+Source/task_sonar.d \
 Source/task_user.d \
 Source/lib/freertos/heap_2.d \
 Source/lib/freertos/list.d \
@@ -338,6 +343,8 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
 
 
 

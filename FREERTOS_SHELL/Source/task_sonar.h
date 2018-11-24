@@ -1,13 +1,13 @@
 /*
- * task_thermocouple.h
+ * task_sonar.h
  *
- * Created: 2/17/2018 8:31:33 PM
+ * Created: 11/23/2018 7:53:14 PM
  *  Author: Kevin
  */ 
 
 
-#ifndef TASK_SENSOR_H_
-#define TASK_SENSOR_H_
+#ifndef TASK_SONAR_H_
+#define TASK_SONAR_H_
 
 #include <stdlib.h>                         // Prototype declarations for I/O functions
 
@@ -26,7 +26,7 @@
 
 #include "shares.h"                         // Global ('extern') queue declarations
 
-#include "MMA8451.h"
+#include "MB1202.h"
 
 
 /// This macro defines a string that identifies the name and version of this program. 
@@ -39,7 +39,7 @@
  *  with you, they're probably spying on you. 
  */
 
-class task_sensor : public frt_task
+class task_sonar : public frt_task
 {
 private:
 	// No private variables or methods for this class
@@ -47,7 +47,7 @@ private:
 protected:
 
   uint16_t rangeReading_;
-	MMA8451 * mma8451_;
+	MB1202 * mb1202_;
 	
 	// This method displays a simple help message telling the user what to do. It's
 	// protected so that only methods of this class or possibly descendents can use it
@@ -61,7 +61,7 @@ public:
     const char* task_name;
 
 	// This constructor creates a user interface task object
-	task_sensor (const char*, unsigned portBASE_TYPE, size_t, emstream*, MMA8451* mma8451);
+	task_sonar (const char*, unsigned portBASE_TYPE, size_t, emstream*, MB1202 * mb1202);
 
 	/** This method is called by the RTOS once to run the task loop for ever and ever.
 	 */
@@ -70,4 +70,4 @@ public:
 
 
 
-#endif /* TASK_SENSOR_H_ */
+#endif /* TASK_SONAR_H_ */

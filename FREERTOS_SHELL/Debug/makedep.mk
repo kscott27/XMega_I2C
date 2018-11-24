@@ -16,6 +16,8 @@ Source\Packet.cpp
 
 Source\task_sensor.cpp
 
+Source\task_sonar.cpp
+
 Source\task_user.cpp
 
 Source\lib\freertos\heap_2.c

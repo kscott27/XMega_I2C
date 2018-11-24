@@ -36,8 +36,7 @@ public:
 	protected:
 		uint8_t commandCode_;
 	};
-	
-	MB1202(I2CMaster * d);
+
 	MB1202( I2CMaster * d, emstream * s );
 	
 	bool is_ready(void);

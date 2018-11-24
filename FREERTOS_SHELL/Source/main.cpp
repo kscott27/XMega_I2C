@@ -40,6 +40,7 @@
 
 #include "task_user.h"                      // Header for user interface task
 #include "task_sensor.h"
+#include "task_sonar.h"
 
 volatile int counter;
 frt_text_queue print_ser_queue (32, NULL, 10);
@@ -150,11 +151,14 @@ int main (void)
 	
 	// Create instance of IMU class and pass in a pointer to the I2C driver
 	MMA8451 mma8451(&i2c, &ser_dev);
+
+	//Create instance of Sonar class and pass in a pointer to the I2C driver
+	MB1202 mb1202(&i2c, &ser_dev);
 	
 	// The user interface is at low priority; it could have been run in the idle task
 	// but it is desired to exercise the RTOS more thoroughly in this test program
 	new task_user ("UserInt", task_priority (0), 128, &ser_dev);
-	
+	// new task_sonar( "Sonar", task_priority(2), 128, &ser_dev, &mb1202 );	
 	new task_sensor ("Sensor", task_priority (2), 128, &ser_dev, &mma8451);
 	
 	// Enable high level interrupts and global interrupts

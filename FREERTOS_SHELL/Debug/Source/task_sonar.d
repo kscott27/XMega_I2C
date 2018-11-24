@@ -34,7 +34,7 @@ Source/task_sonar.d Source/task_sonar.o: ../Source/task_sonar.cpp \
  ../Source/lib/frtcpp/frt_base_queue.h \
  ../Source/lib/frtcpp/frt_text_queue.h \
  ../Source/lib/frtcpp/frt_shared_data.h ../Source/shares.h \
- ../Source/MMA8451.h ../Source/I2CMaster.h ../Source/Packet.h \
+ ../Source/MB1202.h ../Source/I2CMaster.h ../Source/Packet.h \
  ../Source/I2CAgent.h ../Source/CommAgent.h ../Source/Command.h
 
 c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\include\avr\io.h:
@@ -127,7 +127,7 @@ c:\program\ files\ (x86)\atmel\studio\7.0\toolchain\avr8\avr8-gnu-toolchain\avr\
 
 ../Source/shares.h:
 
-../Source/MMA8451.h:
+../Source/MB1202.h:
 
 ../Source/I2CMaster.h:
 

@@ -10,8 +10,6 @@
 #define MMA8451_H_
 
 #define SLAVE_ADDR 29
-#define ADDR_CHANGE_0 170
-#define ADDR_CHANGE_1 165
 
 #include "I2CMaster.h"
 #include "I2CAgent.h"

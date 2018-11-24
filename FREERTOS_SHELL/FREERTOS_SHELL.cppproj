@@ -246,6 +246,12 @@
     <Compile Include="Source\task_sensor.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="Source\task_sonar.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Source\task_sonar.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Source\task_user.cpp">
       <SubType>compile</SubType>
     </Compile>
