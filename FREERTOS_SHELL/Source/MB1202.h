@@ -17,7 +17,7 @@
 #include "I2CMaster.h"
 #include "I2CAgent.h"
 #include "Command.h"
-#include "frt_queue.h"
+#include "Packet.h"
 #include "emstream.h"
 
 class MB1202
@@ -28,7 +28,7 @@ public:
 		: public Command
 	{
 	public:
-		typedef frt_queue< uint8_t > Packet;
+
 		inline RangeCommand()
 			: commandCode_(RANGE_CMD)
 		{ }

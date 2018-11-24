@@ -18,7 +18,6 @@ MMA8451::MMA8451(I2CMaster * d, emstream * s)
     p_serial(s),
     i2cAgent_(new I2CAgent(s, outPacketSize_, inPacketSize_)),
     slaveAddr_(SLAVE_ADDR),
-    accelData_(new Data()),
     activeCommand_(new ActiveCommand()),
     queryX_(new QueryXRegCommand()),
     queryY_(new QueryYRegCommand()),

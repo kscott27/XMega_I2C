@@ -14,30 +14,17 @@
 #include "I2CMaster.h"
 #include "I2CAgent.h"
 #include "Command.h"
-#include "frt_queue.h"
+#include "Packet.h"
 #include "emstream.h"
 
 class MMA8451
 {
 public:
 
-  class Data
-  {
-  public:
-    uint16_t getAccelX() const { return xAccel_; }
-    uint16_t getAccelY() const { return yAccel_; }
-    uint16_t getAccelZ() const { return zAccel_; }
-
-    uint16_t xAccel_;
-    uint16_t yAccel_;
-    uint16_t zAccel_;
-  };
-
   class ActiveCommand
     : public Command
   {
   public:
-    typedef frt_queue< uint8_t > Packet;
     inline ActiveCommand()
       : reg_(MMA8451::CTRL_REG1)
     { }
@@ -51,7 +38,6 @@ public:
     : public Command
   {
   public:
-    typedef frt_queue< uint8_t > Packet;
     inline QueryXRegCommand()
       : reg_(MMA8451::OUT_X_MSB)
     { }
@@ -64,7 +50,6 @@ public:
     : public Command
   {
   public:
-    typedef frt_queue< uint8_t > Packet;
     inline QueryYRegCommand()
       : reg_(MMA8451::OUT_Y_MSB)
     { }
@@ -77,7 +62,6 @@ public:
     : public Command
   {
   public:
-    typedef frt_queue< uint8_t > Packet;
     inline QueryZRegCommand()
       : reg_(MMA8451::OUT_Z_MSB)
     { }
@@ -86,7 +70,6 @@ public:
     uint8_t reg_;
   };
   
-  MMA8451(I2CMaster * d);
   MMA8451( I2CMaster * d, emstream * s );
   
   bool is_ready(void);
@@ -105,7 +88,6 @@ protected:
   I2CMaster * driver_;
   emstream * p_serial;
   I2CAgent * i2cAgent_;
-  Data * accelData_;
   uint8_t slaveAddr_;
   uint16_t reading_;
   ActiveCommand * activeCommand_;

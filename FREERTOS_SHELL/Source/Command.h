@@ -4,12 +4,11 @@
 #include <avr/io.h>                         // Port I/O for SFR's
 #include <avr/interrupt.h>
 
-#include "frt_queue.h"
+#include "Packet.h"
 
 class Command
 {
 public:
-  typedef frt_queue<uint8_t> Packet;
   inline Command() { }
   virtual void writePacket( Packet & packet ) = 0;
 };
