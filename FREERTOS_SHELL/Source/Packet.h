@@ -18,8 +18,11 @@ public:
   { }
   uint8_t getSize() const { return size_; }
   void resetContent();
+  bool validData() { return success_; }
+  void isValid() { success_ = true; }
 protected:
   uint8_t size_;
+  bool success_;
 };
 
 #endif // PACKET_H_

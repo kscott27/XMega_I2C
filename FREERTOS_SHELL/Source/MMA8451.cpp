@@ -74,7 +74,9 @@ uint16_t MMA8451::getXReading()
   i2cAgent_->transmit(*activeCommand_);
   i2cAgent_->transmit(*queryX_);
   Packet & xData = i2cAgent_->receive();
-  uint16_t data = ((uint16_t) xData.get() << 8) | ((uint16_t) xData.get());
+  uint16_t data = 0;
+  if(xData.validData())
+    data = ((uint16_t) xData.get() << 8) | ((uint16_t) xData.get());
   return data;
 }
 
@@ -83,7 +85,9 @@ uint16_t MMA8451::getYReading()
   i2cAgent_->transmit(*activeCommand_);
   i2cAgent_->transmit(*queryY_);
   Packet & yData = i2cAgent_->receive();
-  uint16_t data = ((uint16_t) yData.get() << 8) | ((uint16_t) yData.get());
+  uint16_t data = 0;
+  if(yData.validData())
+    data = ((uint16_t) yData.get() << 8) | ((uint16_t) yData.get());
   return data;
 }
 
@@ -92,7 +96,9 @@ uint16_t MMA8451::getZReading()
   i2cAgent_->transmit(*activeCommand_);
   i2cAgent_->transmit(*queryZ_);
   Packet & zData = i2cAgent_->receive();
-  uint16_t data = ((uint16_t) zData.get() << 8) | ((uint16_t) zData.get());
+  uint16_t data = 0;
+  if(zData.validData())
+    data = ((uint16_t) zData.get() << 8) | ((uint16_t) zData.get());
   return data;
 }
 

@@ -127,7 +127,7 @@ bool I2CMaster::Transmitter::run( Packet & packet )
     currentState_ = currentState_->execute(packet);
   }
 
-  // currentState_->serialDebug();
+  currentState_->execute(packet);
 
   if( currentState_ == doneState_ )
   {
@@ -160,7 +160,7 @@ Packet & I2CMaster::Receiver::run( Packet & packet )
     currentState_ = currentState_->execute(packet);
   }
 
-  // currentState_->serialDebug();
+  currentState_->execute(packet);
 
   return packet;
 }
@@ -254,6 +254,7 @@ I2CMaster::State * I2CMaster::Receiver::PacketStatusState::execute( Packet & pac
 
 I2CMaster::State * I2CMaster::DoneState::execute( Packet & packet )
 {
+  packet.isValid();
   return nextState_;
 }
 
