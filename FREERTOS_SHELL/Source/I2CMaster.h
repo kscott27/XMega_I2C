@@ -9,7 +9,7 @@
 #ifndef I2CMaster_H_
 #define I2CMaster_H_
 
-//#define F_CPU 32000000
+#define F_CPU 32000000
 
 #include <avr/io.h>                         // Port I/O for SFR's
 #include <avr/interrupt.h>
