@@ -44,8 +44,6 @@ public:
 	bool takeReading(void);
 	
 	uint16_t getReading(void);
-	
-	void change_slave_addr(uint8_t new_addr);
 
 protected:
 

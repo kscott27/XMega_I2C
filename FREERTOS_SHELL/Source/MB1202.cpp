@@ -46,9 +46,3 @@ uint16_t MB1202::getReading()
 	  rangeReading_ = ((uint16_t) data.get() << 8) | ((uint16_t) data.get());
 	return rangeReading_;
 }
-
-void MB1202::change_slave_addr(uint8_t new_addr)
-{
-	addr_change_seq[2] = new_addr << 1;
-	driver_->write(slaveAddr_, addr_change_seq, 3);
-}
