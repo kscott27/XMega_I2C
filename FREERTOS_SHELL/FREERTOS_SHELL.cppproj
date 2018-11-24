@@ -231,6 +231,12 @@
     <None Include="Source\twi_master_driver.c">
       <SubType>compile</SubType>
     </None>
+    <Compile Include="Source\MMA8451.cpp">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="Source\MMA8451.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="Source\Packet.cpp">
       <SubType>compile</SubType>
     </Compile>

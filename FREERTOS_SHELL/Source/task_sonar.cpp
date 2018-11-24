@@ -34,10 +34,10 @@ task_sonar::task_sonar (const char* a_name,
 					  unsigned portBASE_TYPE a_priority, 
 					  size_t a_stack_size,
 					  emstream* p_ser_dev,
-					  MB1202* mb1202
+					  MMA8451 * mma8451
 					 )
 	: frt_task (a_name, a_priority, a_stack_size, p_ser_dev), 
-		mb1202_(mb1202)
+		mma8451_(mma8451)
 {
 	task_name = a_name;
 }
@@ -69,16 +69,16 @@ void task_sonar::run (void)
 			// proceeding to its routine.
 			case (0):
 			    
-				*p_serial << "Range cmd" << endl;
-				mb1202_->takeReading();	
+				// *p_serial << "Range cmd" << endl;
+				// mb1202_->takeReading();	
 				
-				transition_to(1);			
+				// transition_to(1);			
 			
 			  break;
 				
 			case (1):
 			
-				rangeReading_ = mb1202_->getReading();
+				rangeReading_ = mma8451_->getReading();
 				*p_serial << PMS ("Sonar: ") << rangeReading_ << endl;
 				
 				transition_to(0);

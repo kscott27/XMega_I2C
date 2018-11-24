@@ -47,6 +47,7 @@ C_SRCS +=  \
 ../Source/I2CMaster.cpp \
 ../Source/lib/freertos/croutine.c \
 ../Source/MB1202.cpp \
+../Source/MMA8451.cpp \
 ../Source/Packet.cpp \
 ../Source/task_sonar.cpp \
 ../Source/task_user.cpp \
@@ -108,6 +109,7 @@ Source/I2CAgent.o \
 Source/I2CMaster.o \
 Source/lib/freertos/croutine.o \
 Source/MB1202.o \
+Source/MMA8451.o \
 Source/Packet.o \
 Source/task_sonar.o \
 Source/task_user.o \
@@ -162,6 +164,7 @@ Source/I2CAgent.o \
 Source/I2CMaster.o \
 Source/lib/freertos/croutine.o \
 Source/MB1202.o \
+Source/MMA8451.o \
 Source/Packet.o \
 Source/task_sonar.o \
 Source/task_user.o \
@@ -216,6 +219,7 @@ Source/I2CAgent.d \
 Source/I2CMaster.d \
 Source/lib/freertos/croutine.d \
 Source/MB1202.d \
+Source/MMA8451.d \
 Source/Packet.d \
 Source/task_sonar.d \
 Source/task_user.d \
@@ -270,6 +274,7 @@ Source/I2CAgent.d \
 Source/I2CMaster.d \
 Source/lib/freertos/croutine.d \
 Source/MB1202.d \
+Source/MMA8451.d \
 Source/Packet.d \
 Source/task_sonar.d \
 Source/task_user.d \
@@ -333,6 +338,8 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
 
 
 

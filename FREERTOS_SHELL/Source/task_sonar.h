@@ -26,7 +26,7 @@
 
 #include "shares.h"                         // Global ('extern') queue declarations
 
-#include "MB1202.h"
+#include "MMA8451.h"
 
 
 /// This macro defines a string that identifies the name and version of this program. 
@@ -47,7 +47,7 @@ private:
 protected:
 
   uint16_t rangeReading_;
-	MB1202 * mb1202_;
+	MMA8451 * mma8451_;
 	
 	// This method displays a simple help message telling the user what to do. It's
 	// protected so that only methods of this class or possibly descendents can use it
@@ -61,7 +61,7 @@ public:
     const char* task_name;
 
 	// This constructor creates a user interface task object
-	task_sonar (const char*, unsigned portBASE_TYPE, size_t, emstream*, MB1202* mb1202);
+	task_sonar (const char*, unsigned portBASE_TYPE, size_t, emstream*, MMA8451* mma8451);
 
 	/** This method is called by the RTOS once to run the task loop for ever and ever.
 	 */

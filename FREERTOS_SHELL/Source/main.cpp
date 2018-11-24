@@ -35,6 +35,7 @@
 
 #include "I2CMaster.h"
 #include "MB1202.h"
+#include "MMA8451.h"
 #include "I2CAgent.h"
 
 #include "task_user.h"                      // Header for user interface task
@@ -148,7 +149,7 @@ int main (void)
 
 	// I2CAgent i2cAgent();
 	
-	MB1202 mb1202(&i2c, &ser_dev);
+	MMA8451 mma8451(&i2c, &ser_dev);
 	
 	
 	//hi = i2c.is_ready(85);
@@ -157,7 +158,7 @@ int main (void)
 	// but it is desired to exercise the RTOS more thoroughly in this test program
 	new task_user ("UserInt", task_priority (0), 128, &ser_dev);
 	
-	new task_sonar ("Sonar", task_priority (2), 128, &ser_dev, &mb1202);
+	new task_sonar ("Sonar", task_priority (2), 128, &ser_dev, &mma8451);
 	
 	// Enable high level interrupts and global interrupts
 	PMIC_CTRL = (1 << PMIC_HILVLEN_bp | 1 << PMIC_MEDLVLEN_bp | 1 << PMIC_LOLVLEN_bp);

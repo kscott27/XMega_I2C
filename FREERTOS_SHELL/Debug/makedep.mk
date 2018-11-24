@@ -10,6 +10,8 @@ Source\lib\freertos\croutine.c
 
 Source\MB1202.cpp
 
+Source\MMA8451.cpp
+
 Source\Packet.cpp
 
 Source\task_sonar.cpp

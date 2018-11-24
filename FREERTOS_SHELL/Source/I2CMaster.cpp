@@ -86,6 +86,9 @@ I2CMaster::I2CMaster(TWI_t * interface, uint32_t i2c_freq, emstream * s)
   transmitter_ = new Transmitter(this, s);
   receiver_ = new Receiver(this, s);
 
+  scan();
+  *s << is_ready(29) << endl;
+
   *(getSerial()) << "I2CMaster created" << endl;
 }
 
@@ -141,33 +144,33 @@ I2CMaster::Receiver::Receiver( I2CMaster * d, emstream * s )
 
 bool I2CMaster::Transmitter::run( Packet & packet )
 {
-  // currentState_ = startState_;
+  currentState_ = startState_;
   
-  // while( (currentState_ != doneState_) || (currentState_ != errorState_) )
-  // {
-  //   State * transitionState = currentState_->execute(packet);
-  //   currentState_->serialDebug();
-  //   currentState_ = transitionState;
-  // }
+  while( (currentState_ != doneState_) && (currentState_ != errorState_) )
+  {
+    State * transitionState = currentState_->execute(packet);
+    currentState_->serialDebug();
+    currentState_ = transitionState;
+  }
 
-  // currentState_->serialDebug();
+  currentState_->serialDebug();
 
-  // if( currentState_ == doneState_ )
-  // {
-  //   return true;
-  // }
-  // else
-  // {
-  //   return false;
-  // }
+  if( currentState_ == doneState_ )
+  {
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 
-  startState_->execute(packet);
-  startState_->serialDebug();
-  statusState_->execute(packet);
-  statusState_->serialDebug();
-  exchangeState_->execute(packet);
-  statusState_->serialDebug();
-  return true;
+  // startState_->execute(packet);
+  // startState_->serialDebug();
+  // statusState_->execute(packet);
+  // statusState_->serialDebug();
+  // exchangeState_->execute(packet);
+  // statusState_->serialDebug();
+  // return true;
 }
 
 void I2CMaster::Transmitter::StatusState::serialDebug()
@@ -184,33 +187,33 @@ void I2CMaster::Receiver::StatusState::serialDebug()
 
 Packet & I2CMaster::Receiver::run( Packet & packet )
 {
-  // currentState_ = startState_;
+  currentState_ = startState_;
   
-  // while( (currentState_ != doneState_) || (currentState_ != errorState_) )
-  // {
-  //   State * transitionState = currentState_->execute(packet);
-  //   currentState_->serialDebug();
-  //   currentState_ = transitionState;
-  // }
+  while( (currentState_ != doneState_) && (currentState_ != errorState_) )
+  {
+    State * transitionState = currentState_->execute(packet);
+    currentState_->serialDebug();
+    currentState_ = transitionState;
+  }
 
-  // currentState_->serialDebug();
+  currentState_->serialDebug();
 
-  // return packet;
-  startState_->execute(packet);
-  startState_->serialDebug();
-  statusState_->execute(packet);
-  statusState_->serialDebug();
-  exchangeState_->execute(packet);
-  statusState_->serialDebug();
-  packetStatusState_->execute(packet);
-  statusState_->serialDebug();
-  statusState_->execute(packet);
-  statusState_->serialDebug();
-  exchangeState_->execute(packet);
-  statusState_->serialDebug();
-  packetStatusState_->execute(packet);
-  statusState_->serialDebug();
   return packet;
+  // startState_->execute(packet);
+  // startState_->serialDebug();
+  // statusState_->execute(packet);
+  // statusState_->serialDebug();
+  // exchangeState_->execute(packet);
+  // statusState_->serialDebug();
+  // packetStatusState_->execute(packet);
+  // statusState_->serialDebug();
+  // statusState_->execute(packet);
+  // statusState_->serialDebug();
+  // exchangeState_->execute(packet);
+  // statusState_->serialDebug();
+  // packetStatusState_->execute(packet);
+  // statusState_->serialDebug();
+  // return packet;
 }
 
 I2CMaster::State * I2CMaster::StartState::execute( Packet & packet )
@@ -321,17 +324,22 @@ uint8_t* I2CMaster::scan (void)
   uint8_t addr_list_index;
   addr_list_index = 0;
   
-  for (uint8_t addr = 0; addr < 128; addr++)
+  for (uint8_t addr = 1; addr < 128; addr++)
   {
     counter = 100;
+    send_start();
     interface_->MASTER.ADDR = addr << 1;
     
     while ((--counter != 0) && (interface_->MASTER.STATUS & TWI_MASTER_RXACK_bm)){ }
     if(counter != 0)
     {
+      uint8_t addr_reg = interface_->MASTER.ADDR;
+      *p_serial << "Detected i2c addr: " << addr_reg << endl;
       addr_list[addr_list_index] = addr;
       addr_list_index++;
     }
+
+    send_nack_stop();
       
   }
   
@@ -341,19 +349,19 @@ uint8_t* I2CMaster::scan (void)
 bool I2CMaster::is_ready (uint8_t addr)
 {
   volatile uint16_t counter = 500;
-  
+  send_start();
   interface_->MASTER.ADDR = addr << 1;
   
   while ((--counter != 0) && (interface_->MASTER.STATUS & TWI_MASTER_RXACK_bm)){ }
   if(counter != 0)
   {
-    send_nack_stop();
     return true;
   }
   else
   {
     return false;
   }
+  send_nack_stop();
 }
 
 bool I2CMaster::write (uint8_t slave_addr, uint8_t* data, uint8_t packet_len, uint16_t timeout)
