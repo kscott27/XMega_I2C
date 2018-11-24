@@ -69,22 +69,22 @@ void task_sonar::run (void)
 			// proceeding to its routine.
 			case (0):
 			  
-			  *p_serial << mma8451_->getReading() << endl;
-				// *p_serial << "Range cmd" << endl;
-				// mma8451_->takeReading();	
+				*p_serial << "x: " << mma8451_->getXReading() << endl;
+				*p_serial << "y: " << mma8451_->getYReading() << endl;
+				*p_serial << "z: " << mma8451_->getZReading() << endl;
 				
 				// transition_to(1);			
 			
 			  break;
 				
-			case (1):
+			// case (1):
 			
-				rangeReading_ = mma8451_->getReading();
-				*p_serial << PMS ("Sonar: ") << rangeReading_ << endl;
+				// rangeReading_ = mma8451_->getReading();
+				// *p_serial << PMS ("Sonar: ") << rangeReading_ << endl;
 				
-				transition_to(0);
+				// transition_to(0);
 				
-				break;
+				// break;
 			
 
 		} // End switch state
@@ -93,6 +93,6 @@ void task_sonar::run (void)
 
 		// No matter the state, wait for approximately a millisecond before we 
 		// run the loop again. This gives lower priority tasks a chance to run
-		vTaskDelay (configMS_TO_TICKS (5000));
+		vTaskDelay (configMS_TO_TICKS (1000));
 	}
 }

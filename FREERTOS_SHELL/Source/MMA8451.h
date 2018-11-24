@@ -23,6 +23,18 @@ class MMA8451
 {
 public:
 
+  class Data
+  {
+  public:
+    uint16_t getAccelX() const { return xAccel_; }
+    uint16_t getAccelY() const { return yAccel_; }
+    uint16_t getAccelZ() const { return zAccel_; }
+
+    uint16_t xAccel_;
+    uint16_t yAccel_;
+    uint16_t zAccel_;
+  };
+
   class ActiveCommand
     : public Command
   {
@@ -82,8 +94,12 @@ public:
   bool is_ready(void);
   
   bool takeReading(void);
+
+  uint16_t getXReading();
+  uint16_t getYReading();
+  uint16_t getZReading();
   
-  uint16_t getReading(void);
+  void getReading( uint16_t * accelData );
 
   static const uint8_t CTRL_REG1 = 0x2A;
   static const uint8_t OUT_X_MSB = 0x01;
@@ -95,13 +111,14 @@ protected:
   I2CMaster * driver_;
   emstream * p_serial;
   I2CAgent * i2cAgent_;
+  Data * accelData_;
   uint8_t slaveAddr_;
   uint16_t reading_;
   ActiveCommand * activeCommand_;
   QueryXRegCommand * queryX_;
   QueryYRegCommand * queryY_;
   QueryZRegCommand * queryZ_;
-  static const uint8_t outPacketSize_ = 2;
+  static const uint8_t outPacketSize_ = 3;
   static const uint8_t inPacketSize_ = 2;
   
 };

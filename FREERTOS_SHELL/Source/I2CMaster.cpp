@@ -47,8 +47,6 @@ I2CMaster::I2CMaster(TWI_t * interface, uint32_t i2c_freq, emstream * s)
   : interface_(interface), 
     i2c_freq(i2c_freq),
     p_serial(s)
-    // transmitter_(new Transmitter(this, s)),
-    // receiver_(new Receiver(this, s))
 { 
   if (interface == &TWIC)
   {
@@ -66,22 +64,10 @@ I2CMaster::I2CMaster(TWI_t * interface, uint32_t i2c_freq, emstream * s)
   interface->MASTER.CTRLB = 1 << 1;
   
   set_baudrate(i2c_freq); //baud rate is set such that TWI freq=100KHz
-  
-//  ptwiport->CTRL=0x00; //SDA hold time off, normal TWI operation
-  
-//  ptwiport->MASTER.CTRLA = TWI_MASTER_INTLVL_HI_gc|TWI_MASTER_RIEN_bm|TWI_MASTER_WIEN_bm|TWI_MASTER_ENABLE_bm; //enable high priority read and write interrupt, enable MASTER
-  
-//  ptwiport->MASTER.CTRLB = 0x00; //TWI_MASTER_QCEN_bm; //no inactive bus timeout, quick command and smart mode enabled
-  
-//  ptwiport->MASTER.CTRLC = 0x00; //initially send ACK and no CMD selected
 
   interface->MASTER.STATUS |= TWI_MASTER_RIF_bm | TWI_MASTER_WIF_bm | TWI_MASTER_ARBLOST_bm | TWI_MASTER_BUSERR_bm | TWI_MASTER_BUSSTATE_IDLE_gc; //clear all flags initially and select bus state IDLE
 
   interface->MASTER.CTRLA = TWI_MASTER_ENABLE_bm;
-
-
-  *s << "i2c constructor this: " << this << endl;
-  *s << "i2c serial ptr: " << getSerial() << endl;
 
   transmitter_ = new Transmitter(this, s);
   receiver_ = new Receiver(this, s);
@@ -97,12 +83,6 @@ void I2CMaster::scanBus()
 
 }
 
-// I2CMaster::StartState::StartState( I2CMaster * d )
-//   : driver_(d)
-// {
-//   // emstream * p_serial = d->getSerial();
-//   // *p_serial << "s" << endl;
-// }
 
 I2CMaster::Transmitter::Transmitter( I2CMaster * d, emstream * s )
   : driver_(d),
@@ -115,10 +95,6 @@ I2CMaster::Transmitter::Transmitter( I2CMaster * d, emstream * s )
     doneState_(new DoneState( d )),
     errorState_(new ErrorState( d ))
 {
-  *s << "trans constructor i2c ptr: " << d << endl;
-  *s << "trans constructor get serial: " << d->getSerial() << endl;
-  *s << "serial: " << s << endl;
-  // *(d->getSerial()) << "transmitter" << endl;
   startState_->setTransition(statusState_, statusState_);
   statusState_->setTransition(exchangeState_, errorState_);
   exchangeState_->setTransition(packetStatusState_, packetStatusState_);
@@ -151,7 +127,7 @@ bool I2CMaster::Transmitter::run( Packet & packet )
     currentState_ = currentState_->execute(packet);
   }
 
-  currentState_->serialDebug();
+  // currentState_->serialDebug();
 
   if( currentState_ == doneState_ )
   {
@@ -161,26 +137,18 @@ bool I2CMaster::Transmitter::run( Packet & packet )
   {
     return false;
   }
-
-  // startState_->execute(packet);
-  // startState_->serialDebug();
-  // statusState_->execute(packet);
-  // statusState_->serialDebug();
-  // exchangeState_->execute(packet);
-  // statusState_->serialDebug();
-  // return true;
 }
 
 void I2CMaster::Transmitter::StatusState::serialDebug()
 {
   uint8_t status = driver_->getInterfacePtr()->MASTER.STATUS;
-  *(driver_->getSerial()) << "T Status: " << status << endl;
+  // *(driver_->getSerial()) << "T Status: " << status << endl;
 }
 
 void I2CMaster::Receiver::StatusState::serialDebug()
 {
   uint8_t status = driver_->getInterfacePtr()->MASTER.STATUS;
-  *(driver_->getSerial()) << "R Status: " << status << endl;
+  // *(driver_->getSerial()) << "R Status: " << status << endl;
 }
 
 Packet & I2CMaster::Receiver::run( Packet & packet )
@@ -189,30 +157,12 @@ Packet & I2CMaster::Receiver::run( Packet & packet )
   
   while( (currentState_ != doneState_) && (currentState_ != errorState_) )
   {
-    State * transitionState = currentState_->execute(packet);
-    currentState_->serialDebug();
-    statusState_->serialDebug();
-    currentState_ = transitionState;
+    currentState_ = currentState_->execute(packet);
   }
 
-  currentState_->serialDebug();
+  // currentState_->serialDebug();
 
   return packet;
-  // startState_->execute(packet);
-  // startState_->serialDebug();
-  // statusState_->execute(packet);
-  // statusState_->serialDebug();
-  // exchangeState_->execute(packet);
-  // statusState_->serialDebug();
-  // packetStatusState_->execute(packet);
-  // statusState_->serialDebug();
-  // statusState_->execute(packet);
-  // statusState_->serialDebug();
-  // exchangeState_->execute(packet);
-  // statusState_->serialDebug();
-  // packetStatusState_->execute(packet);
-  // statusState_->serialDebug();
-  // return packet;
 }
 
 I2CMaster::State * I2CMaster::StartState::execute( Packet & packet )
@@ -226,12 +176,12 @@ I2CMaster::State * I2CMaster::StartState::execute( Packet & packet )
 
 I2CMaster::State * I2CMaster::Transmitter::StatusState::execute( Packet & packet )
 {
-  *(driver_->getSerial()) << "t status" << endl;
   volatile uint16_t counter;
   counter = timeout_;
   // Need to figure out which status bit to be checking
   while( ( --counter != 0 ) && 
          !( driver_->getInterfacePtr()->MASTER.STATUS & TWI_MASTER_WIF_bm ) ) { }
+  serialDebug();
   if( !(driver_->getInterfacePtr()->MASTER.STATUS & TWI_MASTER_RXACK_bm) &&
         (driver_->getInterfacePtr()->MASTER.STATUS & TWI_MASTER_WIF_bm) ) 
   {
@@ -245,12 +195,12 @@ I2CMaster::State * I2CMaster::Transmitter::StatusState::execute( Packet & packet
 
 I2CMaster::State * I2CMaster::Receiver::StatusState::execute( Packet & packet )
 {
-  *(driver_->getSerial()) << "r status" << endl;
   volatile uint16_t counter;
   counter = timeout_;
   // Need to figure out which status bit to be checking
   while( ( --counter != 0) && 
          !( driver_->getInterfacePtr()->MASTER.STATUS & TWI_MASTER_RIF_bm ) ){ }
+  serialDebug();
   if( !(driver_->getInterfacePtr()->MASTER.STATUS & TWI_MASTER_RXACK_bm) &&
         (driver_->getInterfacePtr()->MASTER.STATUS & TWI_MASTER_RIF_bm) ) {
     return nextState_; }
@@ -264,7 +214,7 @@ I2CMaster::State * I2CMaster::Transmitter::ExchangeState::execute( Packet & pack
   {
     uint8_t * data; 
     packet.get(data);
-    *(driver_->getSerial()) << "T exchange data: " << *data << endl;
+    // *(driver_->getSerial()) << "T exchange data: " << *data << endl;
     driver_->getInterfacePtr()->MASTER.DATA = *data;
   }
   return nextState_;
@@ -273,14 +223,13 @@ I2CMaster::State * I2CMaster::Transmitter::ExchangeState::execute( Packet & pack
 I2CMaster::State * I2CMaster::Receiver::ExchangeState::execute( Packet & packet )
 {
   uint8_t data = driver_->getInterfacePtr()->MASTER.DATA;
-  *(driver_->getSerial()) << "Received byte: " << data << endl;
+  // *(driver_->getSerial()) << "Received byte: " << data << endl;
   packet.put(data);
   return nextState_;
 }
 
 I2CMaster::State * I2CMaster::Transmitter::PacketStatusState::execute( Packet & packet )
 {
-  *(driver_->getSerial()) << "t pstatus" << endl;
   if( packet.is_empty() )
   {
     return nextState_;
@@ -293,14 +242,13 @@ I2CMaster::State * I2CMaster::Transmitter::PacketStatusState::execute( Packet & 
 
 I2CMaster::State * I2CMaster::Receiver::PacketStatusState::execute( Packet & packet )
 {
-  *(driver_->getSerial()) << "r pstatus" << endl;
   if( packet.num_items_in() == packet.getSize() ) {
     driver_->send_nack_stop();
-    *(driver_->getSerial()) << "stop" << endl;
+    // *(driver_->getSerial()) << "stop" << endl;
     return nextState_; }
   else {
     driver_->byte_recv();
-    *(driver_->getSerial()) << "continue" << endl;
+    // *(driver_->getSerial()) << "continue" << endl;
     return returnState_; }
 }
 

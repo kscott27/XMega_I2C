@@ -28,6 +28,7 @@ MMA8451::MMA8451(I2CMaster * d, emstream * s)
     p_serial(s),
     i2cAgent_(new I2CAgent(s, outPacketSize_, inPacketSize_)),
     slaveAddr_(SLAVE_ADDR),
+    accelData_(new Data()),
     activeCommand_(new ActiveCommand()),
     queryX_(new QueryXRegCommand()),
     queryY_(new QueryYRegCommand()),
@@ -40,6 +41,7 @@ MMA8451::MMA8451(I2CMaster * d, emstream * s)
 void MMA8451::ActiveCommand::writePacket( Packet & packet )
 {
   packet.put(reg_);
+  packet.put(data_);
 }
 
 void MMA8451::QueryXRegCommand::writePacket( Packet & packet )
@@ -67,15 +69,44 @@ bool MMA8451::takeReading()
   return i2cAgent_->transmit(*queryX_);
 }
 
-uint16_t MMA8451::getReading()
+uint16_t MMA8451::getXReading()
 {
+  i2cAgent_->transmit(*activeCommand_);
+  i2cAgent_->transmit(*queryX_);
+  Packet & xData = i2cAgent_->receive();
+  uint16_t data = ((uint16_t) xData.get() << 8) | ((uint16_t) xData.get());
+  return data;
+}
+
+uint16_t MMA8451::getYReading()
+{
+  i2cAgent_->transmit(*activeCommand_);
+  i2cAgent_->transmit(*queryY_);
+  Packet & yData = i2cAgent_->receive();
+  uint16_t data = ((uint16_t) yData.get() << 8) | ((uint16_t) yData.get());
+  return data;
+}
+
+uint16_t MMA8451::getZReading()
+{
+  i2cAgent_->transmit(*activeCommand_);
+  i2cAgent_->transmit(*queryZ_);
+  Packet & zData = i2cAgent_->receive();
+  uint16_t data = ((uint16_t) zData.get() << 8) | ((uint16_t) zData.get());
+  return data;
+}
+
+void MMA8451::getReading( uint16_t * accelData )
+{
+  i2cAgent_->transmit(*activeCommand_);
   i2cAgent_->transmit(*queryX_);
   Packet & xData = i2cAgent_->receive();
   i2cAgent_->transmit(*queryY_);
   Packet & yData = i2cAgent_->receive();
   i2cAgent_->transmit(*queryZ_);
   Packet & zData = i2cAgent_->receive();
-  uint16_t xReading = ((uint16_t) xData.get() << 8) | ((uint16_t) xData.get());
-  return xReading;
+  accelData[0] = ((uint16_t) xData.get() << 8) | ((uint16_t) xData.get());
+  accelData[1] = ((uint16_t) yData.get() << 8) | ((uint16_t) yData.get());
+  accelData[2] = ((uint16_t) zData.get() << 8) | ((uint16_t) zData.get());
 }
 
