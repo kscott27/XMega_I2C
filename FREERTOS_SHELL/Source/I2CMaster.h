@@ -224,8 +224,7 @@ public:
     uint16_t timeout_;
 
   };
-
-  // I2CMaster(TWI_t * interface, uint32_t i2c_freq);
+  
   I2CMaster(TWI_t * interface, uint32_t i2c_freq, emstream * s);
 
   Transmitter * getTransmitter()  { return transmitter_; }
