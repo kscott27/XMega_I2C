@@ -36,6 +36,45 @@ public:
     uint8_t reg_;
     const uint8_t data_ = 0x01;
   };
+
+  class QueryXRegCommand
+    : public Command
+  {
+  public:
+    typedef frt_queue< uint8_t > Packet;
+    inline QueryXRegCommand()
+      : reg_(MMA8451::OUT_X_MSB)
+    { }
+    void writePacket( Packet & packet );
+  protected:
+    uint8_t reg_;
+  };
+
+  class QueryYRegCommand
+    : public Command
+  {
+  public:
+    typedef frt_queue< uint8_t > Packet;
+    inline QueryYRegCommand()
+      : reg_(MMA8451::OUT_Y_MSB)
+    { }
+    void writePacket( Packet & packet );
+  protected:
+    uint8_t reg_;
+  };
+
+  class QueryZRegCommand
+    : public Command
+  {
+  public:
+    typedef frt_queue< uint8_t > Packet;
+    inline QueryZRegCommand()
+      : reg_(MMA8451::OUT_Z_MSB)
+    { }
+    void writePacket( Packet & packet );
+  protected:
+    uint8_t reg_;
+  };
   
   MMA8451(I2CMaster * d);
   MMA8451( I2CMaster * d, emstream * s );
@@ -47,6 +86,9 @@ public:
   uint16_t getReading(void);
 
   static const uint8_t CTRL_REG1 = 0x2A;
+  static const uint8_t OUT_X_MSB = 0x01;
+  static const uint8_t OUT_Y_MSB = 0x03;
+  static const uint8_t OUT_Z_MSB = 0x05;
 
 protected:
 
@@ -56,7 +98,10 @@ protected:
   uint8_t slaveAddr_;
   uint16_t reading_;
   ActiveCommand * activeCommand_;
-  static const uint8_t outPacketSize_ = 3;
+  QueryXRegCommand * queryX_;
+  QueryYRegCommand * queryY_;
+  QueryZRegCommand * queryZ_;
+  static const uint8_t outPacketSize_ = 2;
   static const uint8_t inPacketSize_ = 2;
   
 };

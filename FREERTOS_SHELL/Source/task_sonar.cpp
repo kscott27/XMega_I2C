@@ -68,9 +68,10 @@ void task_sonar::run (void)
 			// In state 0, the motor task is waiting for the user to enter data before 
 			// proceeding to its routine.
 			case (0):
-			    
+			  
+			  *p_serial << mma8451_->getReading() << endl;
 				// *p_serial << "Range cmd" << endl;
-				// mb1202_->takeReading();	
+				// mma8451_->takeReading();	
 				
 				// transition_to(1);			
 			
@@ -92,6 +93,6 @@ void task_sonar::run (void)
 
 		// No matter the state, wait for approximately a millisecond before we 
 		// run the loop again. This gives lower priority tasks a chance to run
-		vTaskDelay (configMS_TO_TICKS (1000));
+		vTaskDelay (configMS_TO_TICKS (5000));
 	}
 }

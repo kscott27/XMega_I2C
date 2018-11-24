@@ -20,6 +20,7 @@ MMA8451::MMA8451(I2CMaster * d)
 {
   i2cAgent_->setI2CDriver(d);
   i2cAgent_->setSlaveAddr(slaveAddr_);
+  i2cAgent_->transmit(*activeCommand_);
 }
 
 MMA8451::MMA8451(I2CMaster * d, emstream * s)
@@ -27,7 +28,10 @@ MMA8451::MMA8451(I2CMaster * d, emstream * s)
     p_serial(s),
     i2cAgent_(new I2CAgent(s, outPacketSize_, inPacketSize_)),
     slaveAddr_(SLAVE_ADDR),
-    activeCommand_(new ActiveCommand())
+    activeCommand_(new ActiveCommand()),
+    queryX_(new QueryXRegCommand()),
+    queryY_(new QueryYRegCommand()),
+    queryZ_(new QueryZRegCommand())
 {
   i2cAgent_->setI2CDriver(d);
   i2cAgent_->setSlaveAddr(slaveAddr_);
@@ -36,7 +40,21 @@ MMA8451::MMA8451(I2CMaster * d, emstream * s)
 void MMA8451::ActiveCommand::writePacket( Packet & packet )
 {
   packet.put(reg_);
-  packet.put(data_);
+}
+
+void MMA8451::QueryXRegCommand::writePacket( Packet & packet )
+{
+  packet.put(reg_);
+}
+
+void MMA8451::QueryYRegCommand::writePacket( Packet & packet )
+{
+  packet.put(reg_);
+}
+
+void MMA8451::QueryZRegCommand::writePacket( Packet & packet )
+{
+  packet.put(reg_);
 }
 
 bool MMA8451::is_ready()
@@ -46,14 +64,18 @@ bool MMA8451::is_ready()
 
 bool MMA8451::takeReading()
 {
-  *p_serial << "mb1202 range cmd" << endl;
-  return i2cAgent_->transmit(*activeCommand_);
+  return i2cAgent_->transmit(*queryX_);
 }
 
 uint16_t MMA8451::getReading()
 {
-  Packet & data = i2cAgent_->receive();
-  reading_ = ((uint16_t) data.get() << 8) | ((uint16_t) data.get());
-  return reading_;
+  i2cAgent_->transmit(*queryX_);
+  Packet & xData = i2cAgent_->receive();
+  i2cAgent_->transmit(*queryY_);
+  Packet & yData = i2cAgent_->receive();
+  i2cAgent_->transmit(*queryZ_);
+  Packet & zData = i2cAgent_->receive();
+  uint16_t xReading = ((uint16_t) xData.get() << 8) | ((uint16_t) xData.get());
+  return xReading;
 }
 
