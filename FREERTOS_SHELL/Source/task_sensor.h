@@ -39,7 +39,7 @@
  *  with you, they're probably spying on you. 
  */
 
-class task_sonar : public frt_task
+class task_sensor : public frt_task
 {
 private:
 	// No private variables or methods for this class
@@ -61,7 +61,7 @@ public:
     const char* task_name;
 
 	// This constructor creates a user interface task object
-	task_sonar (const char*, unsigned portBASE_TYPE, size_t, emstream*, MMA8451* mma8451);
+	task_sensor (const char*, unsigned portBASE_TYPE, size_t, emstream*, MMA8451* mma8451);
 
 	/** This method is called by the RTOS once to run the task loop for ever and ever.
 	 */

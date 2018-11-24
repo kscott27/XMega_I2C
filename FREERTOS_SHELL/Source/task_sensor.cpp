@@ -10,7 +10,7 @@
 
 #include "shared_data_sender.h"
 #include "shared_data_receiver.h"
-#include "task_sonar.h"                      // Header for this file
+#include "task_sensor.h"                      // Header for this file
 
 
 /** This constant sets how many RTOS ticks the task delays if the user's not talking.
@@ -30,7 +30,7 @@ const portTickType ticks_to_delay = ((configTICK_RATE_HZ / 1000) * 5);
  *                   be used by this task to communicate (default: NULL)
  */
 
-task_sonar::task_sonar (const char* a_name, 
+task_sensor::task_sensor (const char* a_name, 
 					  unsigned portBASE_TYPE a_priority, 
 					  size_t a_stack_size,
 					  emstream* p_ser_dev,
@@ -49,7 +49,7 @@ task_sonar::task_sonar (const char* a_name,
  *  free to do exactly what you're told." 
  */
 
-void task_sonar::run (void)
+void task_sensor::run (void)
 {
 	char char_in;                           // Character read from serial device
 	time_stamp a_time;                      // Holds the time so it can be displayed

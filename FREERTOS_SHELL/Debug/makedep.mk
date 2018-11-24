@@ -14,7 +14,7 @@ Source\MMA8451.cpp
 
 Source\Packet.cpp
 
-Source\task_sonar.cpp
+Source\task_sensor.cpp
 
 Source\task_user.cpp
 

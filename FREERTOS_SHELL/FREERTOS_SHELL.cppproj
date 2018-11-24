@@ -228,9 +228,6 @@
     <Compile Include="Source\MB1202.h">
       <SubType>compile</SubType>
     </Compile>
-    <None Include="Source\twi_master_driver.c">
-      <SubType>compile</SubType>
-    </None>
     <Compile Include="Source\MMA8451.cpp">
       <SubType>compile</SubType>
     </Compile>
@@ -243,13 +240,10 @@
     <Compile Include="Source\Packet.h">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Source\twi_master_driver.h">
+    <Compile Include="Source\task_sensor.cpp">
       <SubType>compile</SubType>
     </Compile>
-    <Compile Include="Source\task_sonar.cpp">
-      <SubType>compile</SubType>
-    </Compile>
-    <Compile Include="Source\task_sonar.h">
+    <Compile Include="Source\task_sensor.h">
       <SubType>compile</SubType>
     </Compile>
     <Compile Include="Source\task_user.cpp">
