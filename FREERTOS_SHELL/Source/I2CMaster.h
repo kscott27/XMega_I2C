@@ -47,15 +47,13 @@ public:
     : public State
   {
   public:
-    StartState( I2CMaster * d, emstream * s )
-      : driver_(d),
-        p_serial(s)
-    {*(driver_->getSerial()) << "Start state serial ptr: " << driver_->getSerial() << endl; }
+    StartState( I2CMaster * d )
+      : driver_(d)
+    { }
     State * execute( Packet & packet );
     void serialDebug() { *(driver_->getSerial()) << "start" << endl; }
   protected:
     I2CMaster * driver_;
-    emstream * p_serial;
   };
 
   class StatusState
@@ -102,7 +100,7 @@ public:
   class Receiver
   {
   public:
-    Receiver( I2CMaster * d, emstream * s );
+    Receiver( I2CMaster * d );
     Packet & run( Packet & packet );
 
   protected:
@@ -115,7 +113,7 @@ public:
           timeout_(timeout)
       { }
       State * execute( Packet & packet );
-      void serialDebug(); //{ *(driver_->getSerial()) << "r status" << endl; }
+      void serialDebug();
     protected:
       I2CMaster * driver_;
       uint16_t timeout_;
@@ -148,7 +146,6 @@ public:
     };
 
     I2CMaster * driver_;
-    emstream * p_serial;
     State * currentState_;
     State * startState_;
     State * statusState_;
@@ -165,7 +162,7 @@ public:
   class Transmitter
   {
   public:
-    Transmitter( I2CMaster * d, emstream * s );
+    Transmitter( I2CMaster * d );
     bool run( Packet & packet );
 
   protected:
@@ -178,7 +175,7 @@ public:
           timeout_(timeout)
       { }
       State * execute( Packet & packet );
-      void serialDebug(); //{ *(driver_->getSerial()) << "t status" << endl; }
+      void serialDebug();
     protected:
       I2CMaster * driver_;
       uint16_t timeout_;
@@ -211,7 +208,6 @@ public:
     };
 
     I2CMaster * driver_;
-    emstream * p_serial;
     State * currentState_;
     State * startState_;
     State * statusState_;
@@ -224,7 +220,7 @@ public:
     uint16_t timeout_;
 
   };
-  
+
   I2CMaster(TWI_t * interface, uint32_t i2c_freq, emstream * s);
 
   Transmitter * getTransmitter()  { return transmitter_; }
@@ -253,8 +249,6 @@ public:
   void send_stop(void);
 
 protected:
-
-  void scanBus();
 
   Transmitter * transmitter_;
   Receiver * receiver_;

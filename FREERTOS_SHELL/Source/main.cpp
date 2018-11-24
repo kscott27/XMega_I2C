@@ -145,14 +145,11 @@ int main (void)
 	rs232 ser_dev(0,&USARTE0); // Create a serial device on USART E0
 	ser_dev << clrscr << "FreeRTOS Xmega Testing Program" << endl << endl;
 	
+	// Create instance of I2C driver to be used by sensor objects
 	I2CMaster i2c(&TWIE, 62000, &ser_dev);
-
-	// I2CAgent i2cAgent();
 	
+	// Create instance of IMU class and pass in a pointer to the I2C driver
 	MMA8451 mma8451(&i2c, &ser_dev);
-	
-	
-	//hi = i2c.is_ready(85);
 	
 	// The user interface is at low priority; it could have been run in the idle task
 	// but it is desired to exercise the RTOS more thoroughly in this test program
@@ -169,8 +166,3 @@ int main (void)
 	vTaskStartScheduler ();
 }
 
-/*! TWIC Master Interrupt vector. */
-//ISR(TWIE_TWIM_vect)
-//{
-	//TWI_MasterInterruptHandler(&twiMaster);
-//}

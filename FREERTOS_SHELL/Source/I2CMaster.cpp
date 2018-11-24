@@ -16,7 +16,7 @@ I2CMaster::I2CMaster(TWI_t * interface, uint32_t i2c_freq, emstream * s)
   {
     bus_port = &PORTC;
   }
-  if (interface == &TWIE)
+  else if (interface == &TWIE)
   {
     bus_port = &PORTE;
   }
@@ -25,6 +25,7 @@ I2CMaster::I2CMaster(TWI_t * interface, uint32_t i2c_freq, emstream * s)
   bus_port->PIN0CTRL = PORT_OPC_WIREDANDPULL_gc; //SDA pull up output
   bus_port->PIN1CTRL = PORT_OPC_WIREDANDPULL_gc; //SCL pull up output
   
+  // Set the quick command enable bit so that status interrupt flags are set immediately after slave ACKs
   interface->MASTER.CTRLB = 1 << 1;
   
   set_baudrate(i2c_freq); //baud rate is set such that TWI freq=100KHz
@@ -33,26 +34,17 @@ I2CMaster::I2CMaster(TWI_t * interface, uint32_t i2c_freq, emstream * s)
 
   interface->MASTER.CTRLA = TWI_MASTER_ENABLE_bm;
 
-  transmitter_ = new Transmitter(this, s);
-  receiver_ = new Receiver(this, s);
-
-  scan();
-  *s << is_ready(29) << endl;
+  transmitter_ = new Transmitter(this);
+  receiver_ = new Receiver(this);
 
   *(getSerial()) << "I2CMaster created" << endl;
 }
 
-void I2CMaster::scanBus()
-{
 
-}
-
-
-I2CMaster::Transmitter::Transmitter( I2CMaster * d, emstream * s )
+I2CMaster::Transmitter::Transmitter( I2CMaster * d )
   : driver_(d),
-    p_serial(s),
     timeout_(10000),
-    startState_(new StartState( d, s )),
+    startState_(new StartState( d )),
     statusState_(new StatusState( d, timeout_ )),
     exchangeState_(new ExchangeState( d )),
     packetStatusState_(new PacketStatusState( d )),
@@ -65,11 +57,10 @@ I2CMaster::Transmitter::Transmitter( I2CMaster * d, emstream * s )
   packetStatusState_->setTransition(doneState_, statusState_);
 }
 
-I2CMaster::Receiver::Receiver( I2CMaster * d, emstream * s )
+I2CMaster::Receiver::Receiver( I2CMaster * d )
   : driver_(d),
-    p_serial(s),
     timeout_(10000),
-    startState_(new StartState( d, s )),
+    startState_(new StartState( d )),
     statusState_(new StatusState( d, timeout_ )),
     exchangeState_(new ExchangeState( d )),
     packetStatusState_(new PacketStatusState( d )),
