@@ -153,7 +153,6 @@ public:
     State * packetStatusState_;
     State * errorState_;
     State * doneState_;
-    TWI_t * interface_;
     uint8_t slaveAddr_;
     uint16_t timeout_;
     uint8_t packetSize_;
@@ -215,7 +214,6 @@ public:
     State * packetStatusState_;
     State * errorState_;
     State * doneState_;
-    TWI_t * interface_;
     uint8_t slaveAddr_;
     uint16_t timeout_;
 

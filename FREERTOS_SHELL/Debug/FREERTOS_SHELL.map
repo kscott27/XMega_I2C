@@ -298,7 +298,7 @@ Discarded input sections
                 0x00000000        0x8 Source/task_sonar.o
  .progmem.something
                 0x00000000        0x8 Source/task_sonar.o
- .debug_info    0x00000000     0x1c1c Source/task_sonar.o
+ .debug_info    0x00000000     0x1bfc Source/task_sonar.o
  .debug_abbrev  0x00000000      0x4bc Source/task_sonar.o
  .debug_loc     0x00000000      0x1be Source/task_sonar.o
  .debug_aranges
@@ -2527,37 +2527,37 @@ END GROUP
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000    0x1cab2
+.debug_info     0x00000000    0x1c9f2
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000     0x284f C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/XMEGAA_DFP/1.1.68/gcc/dev/atxmega128a4u/avrxmega7/crtatxmega128a4u.o
- .debug_info    0x0000284f     0x19fa Source/I2CAgent.o
- .debug_info    0x00004249     0x35ab Source/I2CMaster.o
- .debug_info    0x000077f4     0x23eb Source/MB1202.o
- .debug_info    0x00009bdf     0x2986 Source/MMA8451.o
- .debug_info    0x0000c565      0x8ec Source/Packet.o
- .debug_info    0x0000ce51     0x1dc1 Source/task_sensor.o
- .debug_info    0x0000ec12     0x1a7b Source/task_user.o
- .debug_info    0x0001068d      0x30f Source/lib/freertos/heap_2.o
- .debug_info    0x0001099c      0x2c5 Source/lib/freertos/list.o
- .debug_info    0x00010c61      0x275 Source/lib/freertos/port.o
- .debug_info    0x00010ed6      0xdde Source/lib/freertos/queue.o
- .debug_info    0x00011cb4     0x1301 Source/lib/freertos/tasks.o
- .debug_info    0x00012fb5      0x9eb Source/lib/frtcpp/frt_task.o
- .debug_info    0x000139a0      0x640 Source/lib/frtcpp/frt_task_stackprt.o
- .debug_info    0x00013fe0     0x10e6 Source/lib/frtcpp/frt_task_status.o
- .debug_info    0x000150c6      0x410 Source/lib/frtcpp/frt_text_queue.o
- .debug_info    0x000154d6      0x3ab Source/lib/frtcpp/time_stamp_get_us.o
- .debug_info    0x00015881      0x5ae Source/lib/frtcpp/time_stamp_lshift.o
- .debug_info    0x00015e2f      0x9a8 Source/lib/frtcpp/time_stamp_to_now.o
- .debug_info    0x000167d7      0x515 Source/lib/misc/hex_dump_memory.o
- .debug_info    0x00016cec      0x29c Source/lib/misc/mechutil.o
- .debug_info    0x00016f88      0x482 Source/lib/serial/base232.o
- .debug_info    0x0001740a      0xa2f Source/lib/serial/emstream.o
- .debug_info    0x00017e39      0x2b8 Source/lib/serial/emstream_uint16_t.o
- .debug_info    0x000180f1      0x2e0 Source/lib/serial/emstream_uint32_t.o
- .debug_info    0x000183d1      0x2d8 Source/lib/serial/emstream_uint8_t.o
- .debug_info    0x000186a9      0x8db Source/lib/serial/rs232int.o
- .debug_info    0x00018f84     0x3b2e Source/main.o
+ .debug_info    0x0000284f     0x19da Source/I2CAgent.o
+ .debug_info    0x00004229     0x358b Source/I2CMaster.o
+ .debug_info    0x000077b4     0x23cb Source/MB1202.o
+ .debug_info    0x00009b7f     0x2966 Source/MMA8451.o
+ .debug_info    0x0000c4e5      0x8ec Source/Packet.o
+ .debug_info    0x0000cdd1     0x1da1 Source/task_sensor.o
+ .debug_info    0x0000eb72     0x1a7b Source/task_user.o
+ .debug_info    0x000105ed      0x30f Source/lib/freertos/heap_2.o
+ .debug_info    0x000108fc      0x2c5 Source/lib/freertos/list.o
+ .debug_info    0x00010bc1      0x275 Source/lib/freertos/port.o
+ .debug_info    0x00010e36      0xdde Source/lib/freertos/queue.o
+ .debug_info    0x00011c14     0x1301 Source/lib/freertos/tasks.o
+ .debug_info    0x00012f15      0x9eb Source/lib/frtcpp/frt_task.o
+ .debug_info    0x00013900      0x640 Source/lib/frtcpp/frt_task_stackprt.o
+ .debug_info    0x00013f40     0x10e6 Source/lib/frtcpp/frt_task_status.o
+ .debug_info    0x00015026      0x410 Source/lib/frtcpp/frt_text_queue.o
+ .debug_info    0x00015436      0x3ab Source/lib/frtcpp/time_stamp_get_us.o
+ .debug_info    0x000157e1      0x5ae Source/lib/frtcpp/time_stamp_lshift.o
+ .debug_info    0x00015d8f      0x9a8 Source/lib/frtcpp/time_stamp_to_now.o
+ .debug_info    0x00016737      0x515 Source/lib/misc/hex_dump_memory.o
+ .debug_info    0x00016c4c      0x29c Source/lib/misc/mechutil.o
+ .debug_info    0x00016ee8      0x482 Source/lib/serial/base232.o
+ .debug_info    0x0001736a      0xa2f Source/lib/serial/emstream.o
+ .debug_info    0x00017d99      0x2b8 Source/lib/serial/emstream_uint16_t.o
+ .debug_info    0x00018051      0x2e0 Source/lib/serial/emstream_uint32_t.o
+ .debug_info    0x00018331      0x2d8 Source/lib/serial/emstream_uint8_t.o
+ .debug_info    0x00018609      0x8db Source/lib/serial/rs232int.o
+ .debug_info    0x00018ee4     0x3b0e Source/main.o
 
 .debug_abbrev   0x00000000     0x72af
  *(.debug_abbrev)
