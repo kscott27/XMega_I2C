@@ -16,6 +16,8 @@ The I2CAgent inherits from the CommAgent class. The CommAgent is a pure virtual 
 
 MMA8451 Class
 ---
+This class is analogous to what a developer will need to write in order to implement the I2CMaster and I2CAgent classes. Each I2C device has its own specific commands with specific registers and details. The MMA8451 class can be used as a guideline for how to create device-specific Command classes, and how to properly hand them off to the I2CAgent.
+
 The MMA8451 class encapsulates all of the details needed to operate that specific accelerometer over I2C. It handles the specific data that needs to be put in packets and stuffed down to the I2CMaster. This data entails the specific registers and bits within those registers that need to be written to and read from to get the sensor into the proper mode and then access the desired data. The different commands are defined in this class, and then handed over to the I2CAgent so that they can be properly placed into Packets in the proper format. The I2CAgent then hands the packet down to the I2CMaster for bus interaction.
 
 Packet Class
