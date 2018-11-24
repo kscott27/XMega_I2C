@@ -92,14 +92,10 @@ public:
   MMA8451( I2CMaster * d, emstream * s );
   
   bool is_ready(void);
-  
-  bool takeReading(void);
 
   uint16_t getXReading();
   uint16_t getYReading();
   uint16_t getZReading();
-  
-  void getReading( uint16_t * accelData );
 
   static const uint8_t CTRL_REG1 = 0x2A;
   static const uint8_t OUT_X_MSB = 0x01;

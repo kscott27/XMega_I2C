@@ -260,6 +260,8 @@ I2CMaster::State * I2CMaster::DoneState::execute( Packet & packet )
 
 I2CMaster::State * I2CMaster::ErrorState::execute( Packet & packet )
 {
+  uint8_t statusReg = driver_->getInterfacePtr()->MASTER.STATUS;
+  *(driver_->getSerial()) << "I2C transfer failed with status: " << statusReg << endl;
   return nextState_;
 }
 
